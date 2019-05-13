@@ -47,13 +47,27 @@ print(fourpoints.get_points())
 # since scrabble is 15 by 15 i should be divisible by 15
 i = 825
 pts1 = np.float32(fourpoints.get_points())
-pts2 = np.float32([[0,0],[i,0],[0,i],[i,i]])
+pts2 = np.float32([[0,0], [i,0], [0,i], [i,i]])
 
+# if you divide i by 15 (number of rows and columns in Scrabble) you get the width and height (pixels) of each square
+s = int(i/15)
 # M is the perspective matrix
-M = cv2.getPerspectiveTransform(pts1,pts2)
+M = cv2.getPerspectiveTransform(pts1, pts2)
 # dst is the resulting flat image
 dst = cv2.warpPerspective(img, M, (i, i))
-
 cv2.destroyAllWindows()
-cv2.imshow('output', dst)
+j,k = 0,0
+cv2.imshow('output', dst[s*j : s + s*j, s * k : s + s*k])
+cv2.imshow('full', dst)
 cv2.waitKey(0)
+
+# j is the row
+# k is the column
+# s is the width and height in pixels of each square
+for j in range(15):
+    for k in range(15):
+        fname = str(j) + str(k) + ".txt"
+        np.savetxt(fname, dst[s * j: s + s * j, s * k: s + s * k])
+        pdb.set_trace()
+
+
