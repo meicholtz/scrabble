@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 import pdb
 
+''' Double click to place a point. Place four points one at each corner of the Scrabble board. The order of the points 
+placed matters. The order is as follows: top left, top right, bottom left, bottom right.'''
 
 class FourPoints:
     def __init__(self):
