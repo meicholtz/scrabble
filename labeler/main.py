@@ -33,7 +33,7 @@ class FourPoints:
 
     # add a circle to the image based on where the mouse double clicks
     def add_point(self, event, x, y, flags, param):
-        if event == cv2.EVENT_LBUTTONDBLCLK:
+        if event == cv2.EVENT_LBUTTONDOWN:
             # x, y pos of mouse, 2 is the radius of the circle, the rest of the parameters are color
             cv2.circle(self.img, (x, y), 2, (255, 0, 0), -1)
             self.points.append([x,y])
@@ -64,7 +64,6 @@ def main(args):
     # all of the names of images
     f.seek(0)
     labelled = [x.split(' ')[0] for x in f.readlines()]
-    pdb.set_trace()
     images = glob.glob(dir + "/*.jpg")
     if(order == 1):
         images.reverse()
