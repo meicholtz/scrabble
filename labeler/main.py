@@ -18,8 +18,9 @@ parser = argparse.ArgumentParser(description='Double click to place a point. Pla
 
 parser.add_argument('-d', '--directory', type=str, help='The directory containing images you want to label.',
                     default=os.path.dirname(os.getcwd()) + '/data')
-parser.add_argument('-o', '--order', type=str, help='The order in which you want to label images.',
-                    choices=['top', 'bottom'], default='top')
+parser.add_argument('-o', '--order', type=int, help='The order in which you want to label images. 0 is normal '
+                                                    'order 1 is reverse order.',
+                    choices=[0, 1], default=0)
 parser.add_argument('-f', '--file', help='The output file to write labels.', type=str,
                     default=os.path.join(os.getcwd(), 'labels.txt'))
 parser.print_help()
@@ -66,6 +67,8 @@ def main(args):
     labelled = [x.split(' ')[0] for x in f.readlines()]
     pdb.set_trace()
     images = glob.glob(dir + "/*.jpg")
+    if(order == 1):
+        images.reverse()
     # instantiate the four points class
     fourpoints = FourPoints()
 
