@@ -64,7 +64,6 @@ def main(args):
     # all of the names of images
     f.seek(0)
     labelled = [x.split(' ')[0] for x in f.readlines()]
-    pdb.set_trace()
     images = glob.glob(dir + "/*.jpg")
     if(order == 1):
         images.reverse()
