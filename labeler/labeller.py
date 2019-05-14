@@ -22,7 +22,6 @@ parser.add_argument('-o', '--order', type=int, help='The order in which you want
                     choices=[0, 1], default=0)
 parser.add_argument('-f', '--file', help='The output file to write labels.', type=str,
                     default=os.path.join(os.getcwd(), 'labels.txt'))
-parser.print_help()
 args = parser.parse_args()
 
 # this class is used to store four points that make up the corners of a Scrabble board
@@ -89,7 +88,7 @@ def main(args):
                     cont = False
                     fourpoints.new_points()
 
-                if cv2.waitKey(20) & 0xFF == ord('q'):
+                elif cv2.waitKey(20) & 0xFF == ord('q'):
                     f.close()
                     exit()
 
