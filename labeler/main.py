@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import pdb
+import glob
 
 ''' Double click to place a point. Place four points one at each corner of the Scrabble board. The order of the points 
 placed matters. The order is as follows: top left, top right, bottom left, bottom right.'''
@@ -22,6 +23,7 @@ class FourPoints:
 
 
 fourpoints = FourPoints()
+
 
 # show the image
 img = cv2.imread("/Users/Alex/Desktop/Summer 2019/scrabble/data/Photo_2006-03-10_002.jpg", 0)
@@ -69,5 +71,4 @@ for j in range(15):
         fname = str(j) + str(k) + ".txt"
         np.savetxt(fname, dst[s * j: s + s * j, s * k: s + s * k])
         pdb.set_trace()
-
 
