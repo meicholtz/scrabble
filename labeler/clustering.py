@@ -15,13 +15,20 @@ i = 825
 s = int(i/15)
 for line in f.readlines():
     strr = ''
+    # split the line in the text file
     x = line.split()
+    # store the image name
     img = dir + x[0]
+    # read and resize the image
     img = cv2.imread(img)
     img = cv2.resize(img, (640, 480))
+    # store the 4 points in x
     x = x[1:]
+    # convert the points to a string
     pts1 = strr.join(x)
+    # eval converts the string to an array
     pts1 = np.float32(eval(pts1))
+    # pts1 are the corners and pts2 is the width and height
     pts2 = np.float32([[0, 0], [i, 0], [0, i], [i, i]])
     # M is the perspective matrix
     M = cv2.getPerspectiveTransform(pts1, pts2)

@@ -58,12 +58,15 @@ def main(args):
     if(not os.path.isdir(dir)):
         raise Exception('Directory {} does not exist'.format(dir))
 
-    # the w+ indicates that if the file does not exist, create it and also this file will be written to
+    # the a+ indicates that if the file does not exist, create it and also this file will be appended to
     f = open(file, "a+")
-    # all of the names of images
+    # seek starts the reading the file from the beginning
     f.seek(0)
+    # labelled is all of the names of images in the text file
     labelled = [x.split(' ')[0] for x in f.readlines()]
+    # images is a list of all images in the directory that are .jpg
     images = glob.glob(dir + "/*.jpg")
+    # order is a command line argument if the order is 1, start labelling from the bottom
     if(order == 1):
         images.reverse()
     # instantiate the four points class
@@ -83,11 +86,11 @@ def main(args):
             cont = True
             while (cont):
                 cv2.imshow('image', img)
-                # if esc is hit, exit
+                # if esc is hit, skip this image
                 if cv2.waitKey(20) & 0xFF == 27:
                     cont = False
                     fourpoints.new_points()
-
+                # if q is hit, close the file and exit the code
                 elif cv2.waitKey(20) & 0xFF == ord('q'):
                     f.close()
                     exit()
@@ -96,7 +99,9 @@ def main(args):
                 if len(fourpoints.get_points()) == 4:
                     # add the four points and file name to text file
                     f.write(os.path.basename(i) + " " + str(fourpoints.get_points()) + '\n')
+                    # flush saves the file
                     f.flush()
+                    # reset points
                     fourpoints.new_points()
                     cont = False
 
