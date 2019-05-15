@@ -1,10 +1,14 @@
 import numpy as np
 import cv2
+from matplotlib import pyplot as plt
 from sklearn.decomposition import IncrementalPCA
 from sklearn.cluster import KMeans
 import glob
 import pdb
 import re
+
+''' K means clustering with 30 classes: 26 letters, 1 blank time, 1 double letter, 1 triple letter, 1 empty'''
+
 
 # gather images that have been labelled
 f = open('labels.txt')
@@ -13,6 +17,8 @@ dir = '/Users/Alex/Desktop/Summer 2019/scrabble/data/'
 i = 825
 # if you divide i by 15 (number of rows and columns in Scrabble) you get the width and height (pixels) of each square
 s = int(i/15)
+# data to be clustered
+data = []
 for line in f.readlines():
     strr = ''
     # split the line in the text file
@@ -34,6 +40,11 @@ for line in f.readlines():
     M = cv2.getPerspectiveTransform(pts1, pts2)
     # dst is the resulting flat image
     dst = cv2.warpPerspective(img, M, (i, i))
-    cv2.imshow("finished", dst)
-    cv2.waitKey(0)
-
+    # now we need to extract the tiles
+    for j in range(15):
+        for k in range(15):
+            fname = str(j) + str(k) + ".txt"
+            square = np.float32(dst[s * j: s + s * j, s * k: s + s * k])
+            square = square.reshape((9075))
+            data.append(square)
+    data = np.asarray(data)
