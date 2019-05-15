@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 from matplotlib import pyplot as plt
+from scipy.cluster.vq import vq, kmeans, whiten
 from sklearn.decomposition import IncrementalPCA
 from sklearn.cluster import KMeans
 import glob
@@ -19,6 +20,9 @@ i = 825
 s = int(i/15)
 # data to be clustered
 data = []
+counter = 0
+# number of boards to cluster
+num_boards = 10
 for line in f.readlines():
     strr = ''
     # split the line in the text file
@@ -26,7 +30,7 @@ for line in f.readlines():
     # store the image name
     img = dir + x[0]
     # read and resize the image
-    img = cv2.imread(img)
+    img = cv2.imread(img, 0)
     img = cv2.resize(img, (640, 480))
     # store the 4 points in x
     x = x[1:]
@@ -45,6 +49,17 @@ for line in f.readlines():
         for k in range(15):
             fname = str(j) + str(k) + ".txt"
             square = np.float32(dst[s * j: s + s * j, s * k: s + s * k])
-            square = square.reshape((9075))
+            square = square.reshape((-1))
             data.append(square)
-    data = np.asarray(data)
+    counter += 1
+    if counter == num_boards:
+        break
+
+features = np.asarray(data)
+kmeans = KMeans(n_clusters=30, random_state=0, max_iter=5000).fit(features)
+inds = np.where(kmeans.labels_ == 8)
+for x in features[inds]:
+    cv2.imshow("yes", np.uint8(x).reshape((55,-1)))
+    cv2.waitKey(0)
+
+#clustering begins here
