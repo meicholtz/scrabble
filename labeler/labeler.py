@@ -1,3 +1,5 @@
+'''Double click to place a point. Place four points, one at each corner of the Scrabble board. The order of the points placed matters. The order is as follows: top left, top right, bottom left, bottom right.'''
+
 import cv2
 import numpy as np
 import pdb
@@ -5,27 +7,17 @@ import argparse
 import glob
 import os
 
-''' Double click to place a point. Place four points one at each corner of the Scrabble board. The order of the points 
-placed matters. The order is as follows: top left, top right, bottom left, bottom right.'''
-
 
 # set up argparse
-parser = argparse.ArgumentParser(description='Double click to place a point. Place four points one at each corner of '
-                                             'the Scrabble board. The order of the points placed matters. '
-                                             'The order is as follows: top left, top right, '
-                                             'bottom left, bottom right. Press ESC to skip an image. Press Q to quit.')
-
-parser.add_argument('-d', '--directory', type=str, help='The directory containing images you want to label.',
-                    default=os.path.dirname(os.getcwd()) + '/data')
-parser.add_argument('-o', '--order', type=int, help='The order in which you want to label images. 0 is normal '
-                                                    'order 1 is reverse order.',
-                    choices=[0, 1], default=0)
-parser.add_argument('-f', '--file', help='The output file to write labels.', type=str,
-                    default=os.path.join(os.getcwd(), 'labels.txt'))
+parser = argparse.ArgumentParser(description='Double click to place a point. Place four points one at each corner of the Scrabble board. The order of the points placed matters. The order is as follows: top left, top right, bottom left, bottom right. Press ESC to skip an image. Press Q to quit.')
+parser.add_argument('-d', '--directory', type=str, help='The directory containing images you want to label.', default=os.path.join(os.getcwd(), 'data'))
+parser.add_argument('-f', '--file', help='The output file to write labels.', type=str, default=os.path.join(os.getcwd(), 'labels.txt'))
+parser.add_argument('-r', '--reverse', help='label images in reverse order', action="store_true")
 args = parser.parse_args()
 
-# this class is used to store four points that make up the corners of a Scrabble board
+
 class FourPoints:
+    # this class is used to store four points that make up the corners of a Scrabble board
     def __init__(self):
         self.points = []
         self.img = ''
@@ -35,7 +27,7 @@ class FourPoints:
         if event == cv2.EVENT_LBUTTONDOWN:
             # x, y pos of mouse, 2 is the radius of the circle, the rest of the parameters are color
             cv2.circle(self.img, (x, y), 2, (255, 0, 0), -1)
-            self.points.append([x,y])
+            self.points.append([x, y])
 
     def get_points(self):
         return self.points
@@ -49,13 +41,11 @@ class FourPoints:
 
 def main(args):
     # from argparser
-    dir = args.directory
-    order = args.order
-    file = args.file
-
+    dir = os.path.expanduser(args.directory)
+    file = os.path.expanduser(args.file)
 
     # check to see if directory exists
-    if(not os.path.isdir(dir)):
+    if not os.path.isdir(dir):
         raise Exception('Directory {} does not exist'.format(dir))
 
     # the a+ indicates that if the file does not exist, create it and also this file will be appended to
@@ -66,8 +56,8 @@ def main(args):
     labelled = [x.split(' ')[0] for x in f.readlines()]
     # images is a list of all images in the directory that are .jpg
     images = glob.glob(dir + "/*.jpg")
-    # order is a command line argument if the order is 1, start labelling from the bottom
-    if(order == 1):
+
+    if args.reverse:
         images.reverse()
     # instantiate the four points class
     fourpoints = FourPoints()
@@ -105,8 +95,6 @@ def main(args):
                     fourpoints.new_points()
                     cont = False
 
-
-
     # # show the image
     # img = cv2.imread("/Users/Alex/Desktop/Summer 2019/scrabble/data/Photo_2006-03-10_002.jpg", 0)
     # wd, ht = img.shape
@@ -133,17 +121,17 @@ def main(args):
     # since scrabble is 15 by 15 i should be divisible by 15
     i = 825
     pts1 = np.float32(fourpoints.get_points())
-    pts2 = np.float32([[0,0], [i,0], [0,i], [i,i]])
+    pts2 = np.float32([[0, 0], [i, 0], [0, i], [i, i]])
 
     # if you divide i by 15 (number of rows and columns in Scrabble) you get the width and height (pixels) of each square
-    s = int(i/15)
+    s = int(i / 15)
     # M is the perspective matrix
     M = cv2.getPerspectiveTransform(pts1, pts2)
     # dst is the resulting flat image
     dst = cv2.warpPerspective(img, M, (i, i))
     cv2.destroyAllWindows()
-    j,k = 0,0
-    cv2.imshow('output', dst[s*j : s + s*j, s * k : s + s*k])
+    j, k = 0, 0
+    cv2.imshow('output', dst[s * j: s + s * j, s * k: s + s * k])
     cv2.imshow('full', dst)
     cv2.waitKey(0)
 
@@ -155,6 +143,7 @@ def main(args):
             fname = str(j) + str(k) + ".txt"
             np.savetxt(fname, dst[s * j: s + s * j, s * k: s + s * k])
             pdb.set_trace()
+
 
 if __name__ == '__main__':
     main(parser.parse_args())
