@@ -91,7 +91,7 @@ def main(args):
                     cont = False
                     fourpoints.new_points()
                 # if q is hit, close the file and exit the code
-                elif cv2.waitKey(20) & 0xFF == ord('q'):
+                if cv2.waitKey(20) & 0xFF == ord('q'):
                     f.close()
                     exit()
 
