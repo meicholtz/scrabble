@@ -62,4 +62,3 @@ for x in features[inds]:
     cv2.imshow("yes", np.uint8(x).reshape((55,-1)))
     cv2.waitKey(0)
 
-#clustering begins here
