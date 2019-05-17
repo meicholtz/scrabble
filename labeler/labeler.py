@@ -41,11 +41,12 @@ class FourPoints:
 
 def main(args):
     # from argparser
-    dir = os.path.expanduser(args.directory)
+    dirt = os.path.expanduser(args.directory)
+    dirt = "/Users/Alex/Desktop/Summer 2019/scrabble/data"
     file = os.path.expanduser(args.file)
 
     # check to see if directory exists
-    if not os.path.isdir(dir):
+    if not os.path.isdir(dirt):
         raise Exception('Directory {} does not exist'.format(dir))
 
     # the a+ indicates that if the file does not exist, create it and also this file will be appended to
@@ -55,7 +56,7 @@ def main(args):
     # labelled is all of the names of images in the text file
     labelled = [x.split(' ')[0] for x in f.readlines()]
     # images is a list of all images in the directory that are .jpg
-    images = glob.glob(dir + "/*.jpg")
+    images = glob.glob(dirt + "/*.jpg")
 
     if args.reverse:
         images.reverse()
