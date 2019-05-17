@@ -62,11 +62,11 @@ fs = np.vstack(fs)
 pdb.set_trace()
 cv2.imshow("test", fs)
 cv2.waitKey(0)
-montages = build_montages(features[inds], (128, 196), (7, 3))
-for montage in montages:
-	cv2.imshow("Montage", montage)
-	cv2.waitKey(0)
-# for x in features[inds]:
-#     cv2.imshow("yes", np.uint8(x).reshape((55,-1)))
-#     cv2.waitKey(0)
-pdb.set_trace()
+# montages = build_montages(features[inds], (128, 196), (7, 3))
+# for montage in montages:
+# 	cv2.imshow("Montage", montage)
+# 	cv2.waitKey(0)
+# # for x in features[inds]:
+# #     cv2.imshow("yes", np.uint8(x).reshape((55,-1)))
+# #     cv2.waitKey(0)
+# pdb.set_trace()
