@@ -20,7 +20,7 @@ s = int(i/15)
 data = []
 counter = 0
 # number of boards to cluster
-num_boards = 10
+num_boards = 1
 for line in f.readlines():
     strr = ''
     # split the line in the text file
@@ -56,6 +56,12 @@ for line in f.readlines():
 features = np.asarray(data)
 kmeans = KMeans(n_clusters=30, random_state=0, max_iter=500).fit(features)
 inds = np.where(kmeans.labels_ == 13)
+fs = np.uint8(features)
+fs = fs.reshape((225,55,-1))
+fs = np.vstack(fs)
+pdb.set_trace()
+cv2.imshow("test", fs)
+cv2.waitKey(0)
 montages = build_montages(features[inds], (128, 196), (7, 3))
 for montage in montages:
 	cv2.imshow("Montage", montage)
