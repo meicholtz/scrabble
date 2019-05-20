@@ -4,6 +4,9 @@ from imutils import build_montages
 from imutils import paths
 from sklearn.cluster import KMeans
 import pdb
+import sys
+sys.path.append('../test')
+from test import montage
 
 
 ''' K means clustering with 30 classes: 26 letters, 1 blank time, 1 double letter, 1 triple letter, 1 empty'''
@@ -69,4 +72,4 @@ cv2.waitKey(0)
 # # for x in features[inds]:
 # #     cv2.imshow("yes", np.uint8(x).reshape((55,-1)))
 # #     cv2.waitKey(0)
-# pdb.set_trace()
+# pdb.set_trace()t
