@@ -1,9 +1,9 @@
 import numpy as np
 import cv2
-from imutils import build_montages
-from imutils import paths
 from sklearn.cluster import KMeans
 import pdb
+from skimage.util import montage
+import matplotlib.pyplot as plt
 
 
 ''' K means clustering with 30 classes: 26 letters, 1 blank time, 1 double letter, 1 triple letter, 1 empty'''
@@ -58,10 +58,9 @@ kmeans = KMeans(n_clusters=30, random_state=0, max_iter=500).fit(features)
 inds = np.where(kmeans.labels_ == 13)
 fs = np.uint8(features)
 fs = fs.reshape((225,55,-1))
-fs = np.vstack(fs)
-pdb.set_trace()
-cv2.imshow("test", fs)
-cv2.waitKey(0)
+y = montage(fs, grid_shape=(15, 15))
+plt.imshow(y)
+plt.show()
 # montages = build_montages(features[inds], (128, 196), (7, 3))
 # for montage in montages:
 # 	cv2.imshow("Montage", montage)
@@ -69,4 +68,4 @@ cv2.waitKey(0)
 # # for x in features[inds]:
 # #     cv2.imshow("yes", np.uint8(x).reshape((55,-1)))
 # #     cv2.waitKey(0)
-# pdb.set_trace()
+# pdb.set_trace()t
