@@ -3,7 +3,6 @@
 '''Label corners of a Scrabble board in an image.'''
 
 import cv2
-import numpy as np
 import argparse
 import glob
 import os
@@ -24,6 +23,11 @@ def main(args):
     file = os.path.expanduser(args.file)
     reverse = args.reverse
     colorflag = not args.grayscale
+    instructions = [
+        'Click the top-left corner',
+        'Click the top-right corner',
+        'Click the bottom-left corner',
+        'Click the bottom-right corner']
 
     # Get images to be labeled
     imagefiles = glob.glob(os.path.join(root, "*.jpg"))  # image filename list
@@ -49,10 +53,14 @@ def main(args):
             cv2.namedWindow('image')
             cv2.setWindowTitle('image', imagefile)
 
-            # Wait for user to skip, quit, or click on corners
+            # User interaction loop
             cv2.setMouseCallback('image', addpoint, [img, pts])
             while True:
+                # Update image
                 cv2.imshow('image', img)
+                addinstructions(img, instructions[len(pts)])
+
+                # Wait for user input
                 if cv2.waitKey(20) & 0xFF == 27:  # ESC --> skip image
                     pts = []
                     break
@@ -73,6 +81,26 @@ def addpoint(event, x, y, flags, param):
         img, pts = param  # unpack input parameters
         cv2.circle(img, (x, y), 4, (0, 0, 255), -1)  # draw circle on image
         pts.append([x, y])  # append new data point
+
+
+def addinstructions(img, txt):
+    '''Add text on the image instructing the user what to do next.'''
+    # Set text parameters
+    font_scale = 0.8
+    font = cv2.FONT_HERSHEY_DUPLEX
+    thickness = 1
+    margin = 12
+
+    # Get dimensions and coordinates
+    (wid, hei) = cv2.getTextSize(txt, font, font_scale, thickness)[0]
+    x0 = img.shape[1] // 2 - wid // 2
+    y0 = img.shape[0] // 2 - hei // 2
+    topleft = (x0 - margin, y0 + margin)
+    bottomright = (x0 + wid + margin, y0 - hei - margin)
+
+    # Draw rectangle and text
+    cv2.rectangle(img, topleft, bottomright, (0, 0, 0), cv2.FILLED)
+    cv2.putText(img, txt, (x0, y0), font, font_scale, (255, 255, 255), thickness)
 
 
 if __name__ == '__main__':
