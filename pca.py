@@ -23,7 +23,7 @@ s = int(i/15)
 data = []
 counter = 0
 # number of boards to cluster
-num_boards = 600
+num_boards = 1
 for line in f.readlines():
     strr = ''
     # split the line in the text file
@@ -33,9 +33,9 @@ for line in f.readlines():
     # read and resize the image
     img = cv2.imread(img, cv2.CV_8UC1)
     img = cv2.resize(img, (640, 480))
-    img = cv2.medianBlur(img, 1)
-    img = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_MEAN_C, \
-                                   cv2.THRESH_BINARY, 11, 2)
+    # img = cv2.medianBlur(img, 1)
+    # img = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_MEAN_C, \
+    #                                cv2.THRESH_BINARY, 11, 2)
     # store the 4 points in x
     x = x[1:]
     # convert the points to a string
@@ -67,7 +67,8 @@ print("Total dataset size:")
 print("n_samples: %d" % n_samples)
 print("n_features: %d" % n_features)
 print("n_classes: %d" % n_classes)
-
+cv2.imshow("tst", data[0].reshape((55,55)))
+cv2.waitKey(0)
 # 16 components has a variance of around 89.7%
 n_components = 18
 

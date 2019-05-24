@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-
+import pdb
 
 
 def get_squares(file, num_boards):
@@ -16,6 +16,8 @@ def get_squares(file, num_boards):
             num_boards : int
                 Number of boards the user wishes to process
             """
+    # TODO: change directory to be universal
+    directory = '/Users/Alex/Desktop/Summer-2019/scrabble/data/'
     f = open(file)
     squares = []
     counter = 0
@@ -27,12 +29,11 @@ def get_squares(file, num_boards):
         strr = ''
         # split the line in the text file
         x = line.split()
+        img = directory + x[0]
+
         # read and resize the image
-        img = cv2.imread(img, cv2.CV_8UC1)
+        img = cv2.imread(img, 0)
         img = cv2.resize(img, (640, 480))
-        img = cv2.medianBlur(img, 1)
-        img = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_MEAN_C, \
-                                    cv2.THRESH_BINARY, 11, 2)
         # store the 4 points in x
         x = x[1:]
         # convert the points to a string
@@ -54,4 +55,5 @@ def get_squares(file, num_boards):
         counter += 1
         if counter == num_boards:
             break
+    squares = np.uint8(squares)
     return np.asarray(squares)
