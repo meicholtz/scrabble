@@ -22,26 +22,3 @@ for square in squares:
     text = pytesseract.image_to_string(Image.fromarray(square))
     print(text)
 
-# # load the example image and convert it to grayscale
-# image = cv2.imread(args["image"])
-# gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-#
-# cv2.imshow("Image", gray)
-#
-# # apply thresholding
-# gray = cv2.threshold(gray, 0, 255,
-# 		cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
-#
-# # blurring should be done to remove noise
-# gray = cv2.medianBlur(gray, 3)
-# img = []
-#
-# # load numpy images to be OCR'd
-# text = pytesseract.image_to_string(Image.fromarray(img))
-# print(text)
-#
-#
-# # show the output images
-# # cv2.imshow("Image", image)
-# cv2.imshow("Output", gray)
-# cv2.waitKey(0)
