@@ -57,3 +57,25 @@ def get_squares(file, num_boards):
             break
     squares = np.uint8(squares)
     return np.asarray(squares)
+
+def get_board(file, index):
+    root = '/Users/Alex/Desktop/Summer-2019/scrabble/data/'
+    labelfile = file
+    ind = index
+
+    # Read data from labelfile
+    x = np.loadtxt(labelfile, dtype=str, skiprows=ind, max_rows=1)
+    imagefile = file # full path to raw image
+    pts = eval(''.join(x[1:]))  # corners of the board
+
+    # Read image
+    img = cv2.imread(imagefile)
+    img = cv2.resize(img, (640, 480))
+
+    # Warp image
+    sz = 15 * 32  # width and height of warped image (must be divisible by 15 since the board is 15x15)
+    pts1 = np.float32(pts)
+    pts2 = np.float32([[0, 0], [sz, 0], [0, sz], [sz, sz]])
+    M = cv2.getPerspectiveTransform(pts1, pts2)  # perspective matrix
+    img2 = cv2.warpPerspective(img, M, (sz, sz))  # new image
+    return img2
