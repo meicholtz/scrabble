@@ -15,10 +15,9 @@ import cv2
 
 root = tkinter.Tk()
 root.wm_title("Embedding in Tk")
-img = utils.get_board('/Users/Alex/Desktop/Summer-2019/scrabble/labels.txt', 0)
+img = utils.get_board('/Users/Alex/Desktop/Summer-2019/scrabble/labels.txt', 12)
 im = Image.fromarray(img)
 im = pytesseract.image_to_boxes(im)
-pdb.set_trace()
 fig = Figure(figsize=(5, 5), dpi=100)
 t = np.arange(0, 3, .01)
 fig.figimage(img, 0)
