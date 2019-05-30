@@ -15,6 +15,7 @@ def get_squares(file, num_boards):
 
             num_boards : int
                 Number of boards the user wishes to process
+                :rtype: object
             """
     # TODO: change directory to be universal
     directory = '/Users/Alex/Desktop/Summer-2019/scrabble/data/'
@@ -65,7 +66,7 @@ def get_board(file, index):
 
     # Read data from labelfile
     x = np.loadtxt(labelfile, dtype=str, skiprows=ind, max_rows=1)
-    imagefile = file # full path to raw image
+    imagefile = root + x[0] # full path to raw image
     pts = eval(''.join(x[1:]))  # corners of the board
 
     # Read image

@@ -5,17 +5,23 @@ from matplotlib.backends.backend_tkagg import (
 # Implement the default Matplotlib key bindings.
 from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure
-
+import utils
 import numpy as np
+import pytesseract
+from PIL import Image
+import pdb
+import cv2
 
 
 root = tkinter.Tk()
 root.wm_title("Embedding in Tk")
-
-fig = Figure(figsize=(5, 4), dpi=100)
+img = utils.get_board('/Users/Alex/Desktop/Summer-2019/scrabble/labels.txt', 0)
+im = Image.fromarray(img)
+im = pytesseract.image_to_boxes(im)
+pdb.set_trace()
+fig = Figure(figsize=(5, 5), dpi=100)
 t = np.arange(0, 3, .01)
-fig.add_subplot(111).plot(t, 2 * np.sin(2 * np.pi * t))
-
+fig.figimage(img, 0)
 canvas = FigureCanvasTkAgg(fig, master=root)  # A tk.DrawingArea.
 canvas.draw()
 canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
