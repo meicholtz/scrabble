@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 import pdb
-
+from skimage.util import montage
 
 def get_squares(file, num_boards):
     """ function that takes in a text file and number of boards and returns the flattened, individual squares
@@ -59,6 +59,22 @@ def get_squares(file, num_boards):
     squares = np.uint8(squares)
     return np.asarray(squares)
 
+def squares_from_img(img):
+    img = cv2.resize(img, (640, 480))
+    squares = []
+    # since scrabble is 15 by 15 i should be divisible by 15
+    i = 825
+    # if you divide i by 15 (number of rows and columns in Scrabble) you get the width and height (pixels) of each square
+    s = int(i / 15)
+    for j in range(15):
+        for k in range(15):
+            square = np.float32(img[s * j: s + s * j, s * k: s + s * k])
+            square = square.reshape((55, 55))
+            squares.append(square)
+    squares = np.uint8(squares)
+    return np.asarray(squares)
+
+
 def get_board(file, index):
     root = '/Users/Alex/Desktop/Summer-2019/scrabble/data/'
     labelfile = file
@@ -80,3 +96,8 @@ def get_board(file, index):
     M = cv2.getPerspectiveTransform(pts1, pts2)  # perspective matrix
     img2 = cv2.warpPerspective(img, M, (sz, sz))  # new image
     return img2
+
+def display_board(squares):
+    m = montage(squares, grid_shape=(15,15))
+    cv2.imshow("Montage", m)
+    cv2.waitKey(0)
