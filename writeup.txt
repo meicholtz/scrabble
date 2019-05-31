@@ -1,0 +1,4 @@
+Friday, May 31st, 2019
+utils.py
+Worked on getting a function that takes in an already flattened board and splits the board into squares
+Having issues with this function in utils.py: def squares_from_img(img)

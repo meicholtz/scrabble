@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 import pdb
-
+from skimage.util import montage
 
 def get_squares(file, num_boards):
     """ function that takes in a text file and number of boards and returns the flattened, individual squares
@@ -15,6 +15,7 @@ def get_squares(file, num_boards):
 
             num_boards : int
                 Number of boards the user wishes to process
+                :rtype: object
             """
     # TODO: change directory to be universal
     directory = '/Users/Alex/Desktop/Summer-2019/scrabble/data/'
@@ -57,3 +58,48 @@ def get_squares(file, num_boards):
             break
     squares = np.uint8(squares)
     return np.asarray(squares)
+
+def squares_from_img(img):
+    squares = []
+    # since scrabble is 15 by 15 i should be divisible by 15
+    i = 825
+    # if you divide i by 15 (number of rows and columns in Scrabble) you get the width and height (pixels) of each square
+    s = int(i / 15)
+    for j in range(15):
+        for k in range(15):
+            square = np.float32(img[s * j: s + s * j, s * k: s + s * k])
+            square = square.reshape((-1))
+            squares.append(square)
+    squares = np.uint8(squares)
+    return np.asarray(squares)
+
+
+def get_board(file, index):
+    root = '/Users/Alex/Desktop/Summer-2019/scrabble/data/'
+    labelfile = file
+    ind = index
+
+    # Read data from labelfile
+    x = np.loadtxt(labelfile, dtype=str, skiprows=ind, max_rows=1)
+    imagefile = root + x[0] # full path to raw image
+    pts = eval(''.join(x[1:]))  # corners of the board
+
+    # Read image
+    img = cv2.imread(imagefile)
+    img = cv2.resize(img, (640, 480))
+
+    # Warp image
+    sz = 15 * 32  # width and height of warped image (must be divisible by 15 since the board is 15x15)
+    pts1 = np.float32(pts)
+    pts2 = np.float32([[0, 0], [sz, 0], [0, sz], [sz, sz]])
+    M = cv2.getPerspectiveTransform(pts1, pts2)  # perspective matrix
+    img2 = cv2.warpPerspective(img, M, (sz, sz))  # new image
+    img2 = cv2.resize(img2, (825, 825))
+    return img2
+
+def display_board(squares):
+    squares = squares.reshape((-1, 55, 55))
+    m = montage(squares[:225], grid_shape=(15,15))
+    cv2.imshow("Montage", m)
+    cv2.waitKey(0)
+
