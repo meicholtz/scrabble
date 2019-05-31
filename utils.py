@@ -60,7 +60,6 @@ def get_squares(file, num_boards):
     return np.asarray(squares)
 
 def squares_from_img(img):
-    img = cv2.resize(img, (640, 480))
     squares = []
     # since scrabble is 15 by 15 i should be divisible by 15
     i = 825
@@ -69,8 +68,9 @@ def squares_from_img(img):
     for j in range(15):
         for k in range(15):
             square = np.float32(img[s * j: s + s * j, s * k: s + s * k])
-            square = square.reshape((55, 55))
+            square = square.reshape((-1))
             squares.append(square)
+    pdb.set_trace()
     squares = np.uint8(squares)
     return np.asarray(squares)
 
