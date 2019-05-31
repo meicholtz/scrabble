@@ -70,7 +70,6 @@ def squares_from_img(img):
             square = np.float32(img[s * j: s + s * j, s * k: s + s * k])
             square = square.reshape((-1))
             squares.append(square)
-    pdb.set_trace()
     squares = np.uint8(squares)
     return np.asarray(squares)
 
@@ -95,9 +94,12 @@ def get_board(file, index):
     pts2 = np.float32([[0, 0], [sz, 0], [0, sz], [sz, sz]])
     M = cv2.getPerspectiveTransform(pts1, pts2)  # perspective matrix
     img2 = cv2.warpPerspective(img, M, (sz, sz))  # new image
+    img2 = cv2.resize(img2, (825, 825))
     return img2
 
 def display_board(squares):
-    m = montage(squares, grid_shape=(15,15))
+    squares = squares.reshape((-1, 55, 55))
+    m = montage(squares[:225], grid_shape=(15,15))
     cv2.imshow("Montage", m)
     cv2.waitKey(0)
+
