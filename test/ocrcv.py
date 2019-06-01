@@ -9,6 +9,7 @@ import pytesseract
 import argparse
 import cv2
 import utils
+import os
 
 def decode_predictions(scores, geometry):
     # grab the number of rows and columns from the scores volume, then
@@ -86,7 +87,7 @@ args = vars(ap.parse_args())
 
 # load the input image and grab the image dimensions
 image = cv2.imread(args["image"])
-image = utils.get_board('/Users/Alex/Desktop/Summer-2019/scrabble/labels.txt', 0)
+image = utils.get_board(os.path.join(os.getcwd(),'labels.txt'), 0)
 
 
 orig = image.copy()

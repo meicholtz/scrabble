@@ -12,8 +12,8 @@ import os
 import pdb
 import matplotlib.pyplot as plt
 
-# todo: make path universal
-path = '/Users/Alex/Desktop/Summer-2019/scrabble/labels.txt'
+
+path = os.path.join(os.getcwd(),'labels.txt')
 num_boards = 2
 board = utils.get_board(path, 1)
 plt.imshow(board)

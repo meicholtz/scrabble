@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import os
 import pdb
 from skimage.util import montage
 
@@ -17,8 +18,8 @@ def get_squares(file, num_boards):
                 Number of boards the user wishes to process
                 :rtype: object
             """
-    # TODO: change directory to be universal
-    directory = '/Users/Alex/Desktop/Summer-2019/scrabble/data/'
+
+    directory = os.path.join(os.getcwd(),'data')
     f = open(file)
     squares = []
     counter = 0
@@ -75,7 +76,7 @@ def squares_from_img(img):
 
 
 def get_board(file, index):
-    root = '/Users/Alex/Desktop/Summer-2019/scrabble/data/'
+    root = os.path.join(os.getcwd(),'data')
     labelfile = file
     ind = index
 
