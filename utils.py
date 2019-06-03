@@ -69,11 +69,13 @@ def imwarp(img, pts, pixels):
 
 
 def squares_from_img(img):
+    w, h = img.shape[0], img.shape[1]
     temp = []
-    # since scrabble is 15 by 15 pixels should be divisible by 15
-    pixels = 825
-    # if you divide pixels by 15 (number of rows and columns in Scrabble) you get the width and height (pixels) of each square
-    s = int(pixels / 15)
+
+    # since scrabble is 15 by 15 i should be divisible by 15
+    i = w
+    # if you divide i by 15 (number of rows and columns in Scrabble) you get the width and height (pixels) of each square
+    s = int(i / 15)
     for j in range(15):
         for k in range(15):
             square = np.float32(img[s * j: s + s * j, s * k: s + s * k])
@@ -125,6 +127,11 @@ def squares_to_board(squares):
     squares = squares.reshape((-1, 55, 55))
     m = montage(squares[:225], grid_shape=(15, 15))
     return m
+
+
+def showboard(board):
+    cv2.imshow("board", board)
+    cv2.waitKey(0)
 
 
 def display_board(squares):

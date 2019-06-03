@@ -9,3 +9,5 @@ Working in utils.py
     - added way to load squares from a path
     - made paths universal
     - have checks to see whether or not the user is working in the main folder
+thresh.py
+    - created sliders that adjust threshold, thinning, and invert colors
