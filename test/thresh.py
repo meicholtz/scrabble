@@ -4,9 +4,12 @@ import pdb
 import os
 import numpy as np
 
-
+# this is for sliders
 def nothing(x):
     pass
+
+def invert_img(img):
+    img = img - 255
 
 def show(img):
     cv2.imshow("image", img)
@@ -20,22 +23,28 @@ def preprocess(image):
     # Resize the img
     img = cv2.resize(img, (w -150, h -150))
     cv2.namedWindow('image')
-    # create two trackbars for threshold parameters
-    cv2.createTrackbar('Black Threshold', 'image', 60, 255, nothing)
-    cv2.createTrackbar('White Threshold', 'image', 255, 255, nothing)
+    # create trackbar for threshold and thinning parameters
+    cv2.createTrackbar('Threshold', 'image', 60, 255, nothing)
+    cv2.createTrackbar('Thinning', 'image', 0, 5, nothing)
     # create a slider that will invert the colors of the image
     cv2.createTrackbar('invert', 'image', 0, 1, nothing)
+    flag = True
+    kernel = np.ones((5, 5), np.uint8)
     while(1):
         # check the positions of the trackbars and store them
-        x = cv2.getTrackbarPos('Black Threshold', 'image')
-        y = cv2.getTrackbarPos('White Threshold', 'image')
+        x = cv2.getTrackbarPos('Threshold', 'image')
+        y = cv2.getTrackbarPos('Thinning', 'image')
         invert = cv2.getTrackbarPos('invert', 'image')
-        if(invert == 1):
-            img = (255 - img)
         # apply filtering with trackbar parameters
-        ret, temp = cv2.threshold(img, x, y, cv2.THRESH_BINARY)
+        if(invert == 1 and flag):
+            img = 255 - img
+            flag = False
+        if(invert == 0):
+            flag = True
+        ret, temp = cv2.threshold(img, x, 255, cv2.THRESH_BINARY)
+        temp2 = cv2.erode(temp, kernel, iterations=y)
         # display filtered image
-        cv2.imshow('image', temp)
+        cv2.imshow('image', temp2)
         # keep the window alive unless escape is pressed
         k = cv2.waitKey(1) & 0xFF
         if k == 27:
