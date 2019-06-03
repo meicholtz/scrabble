@@ -8,9 +8,6 @@ import numpy as np
 def nothing(x):
     pass
 
-def invert_img(img):
-    img = img - 255
-
 def show(img):
     cv2.imshow("image", img)
     cv2.waitKey(0)
@@ -29,7 +26,7 @@ def preprocess(image):
     # create a slider that will invert the colors of the image
     cv2.createTrackbar('invert', 'image', 0, 1, nothing)
     flag = True
-    kernel = np.ones((5, 5), np.uint8)
+    kernel = np.ones((2, 2), np.uint8)
     while(1):
         # check the positions of the trackbars and store them
         x = cv2.getTrackbarPos('Threshold', 'image')
