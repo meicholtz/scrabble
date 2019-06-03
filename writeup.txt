@@ -2,3 +2,10 @@ Friday, May 31st, 2019
 utils.py
 Worked on getting a function that takes in an already flattened board and splits the board into squares
 Having issues with this function in utils.py: def squares_from_img(img)
+
+
+Monday, June 3rd, 2018
+Working in utils.py
+    - added way to load squares from a path
+    - made paths universal
+    - have checks to see whether or not the user is working in the main folder

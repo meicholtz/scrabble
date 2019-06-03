@@ -61,11 +61,25 @@ def get_squares(file, num_boards):
     return np.asarray(squares)
 
 def squares_from_img(img):
-    pass
+    temp = []
+    # since scrabble is 15 by 15 i should be divisible by 15
+    i = 825
+    # if you divide i by 15 (number of rows and columns in Scrabble) you get the width and height (pixels) of each square
+    s = int(i / 15)
+    for j in range(15):
+        for k in range(15):
+            square = np.float32(img[s * j: s + s * j, s * k: s + s * k])
+            temp.append(square)
+    temp = np.uint8(temp)
+    img = np.asarray(temp)
+    return img
 
 
-def get_board(file, index):
-    root = os.path.join(os.getcwd(),'data')
+def get_board(file, index, squares=False):
+    if(os.path.basename(os.getcwd()) != 'scrabble'):
+        root = os.path.join(os.path.dirname(os.getcwd()), 'data/')
+    else:
+        root = os.path.join(os.getcwd(),'data/')
     labelfile = file
     ind = index
 
@@ -73,7 +87,6 @@ def get_board(file, index):
     x = np.loadtxt(labelfile, dtype=str, skiprows=ind, max_rows=1)
     imagefile = root + x[0] # full path to raw image
     pts = eval(''.join(x[1:]))  # corners of the board
-
     # Read image
     img = cv2.imread(imagefile)
     img = cv2.resize(img, (640, 480))
@@ -85,7 +98,26 @@ def get_board(file, index):
     M = cv2.getPerspectiveTransform(pts1, pts2)  # perspective matrix
     img2 = cv2.warpPerspective(img, M, (sz, sz))  # new image
     img2 = cv2.resize(img2, (825, 825))
+    if(squares):
+        temp = []
+        # since scrabble is 15 by 15 i should be divisible by 15
+        i = 825
+        # if you divide i by 15 (number of rows and columns in Scrabble) you get the width and height (pixels) of each square
+        s = int(i / 15)
+        for j in range(15):
+            for k in range(15):
+                square = np.float32(img2[s * j: s + s * j, s * k: s + s * k])
+                temp.append(square)
+        temp = np.uint8(temp)
+        img2 = np.asarray(temp)
     return img2
+
+
+def squares_to_board(squares):
+    squares = squares.reshape((-1, 55, 55))
+    m = montage(squares[:225], grid_shape=(15, 15))
+    return m
+
 
 def display_board(squares):
     squares = squares.reshape((-1, 55, 55))
