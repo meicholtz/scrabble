@@ -3,13 +3,15 @@ import utils
 import pdb
 import os
 import numpy as np
+import PIL
+import pytesseract
 
 # this is for sliders
 def nothing(x):
     pass
 
 def show(img):
-    cv2.imshow("image", img)
+    cv2.imshow("show", img)
     cv2.waitKey(0)
 
 def preprocess(image):
@@ -46,24 +48,27 @@ def preprocess(image):
         k = cv2.waitKey(1) & 0xFF
         if k == 27:
             break
+        if k == ord('d'):
+            return temp2
 
+def ocr(square):
+    # convert square to be ocr'd
+    img = PIL.Image.fromarray(square)
+    # get ocr label
+    label = pytesseract.image_to_string(img)
+    print(label)
+    show(square)
 
 for x in range(0, 100):
     path = os.path.join(os.path.dirname(os.getcwd()), 'labels.txt')
     test = utils.get_board(path, x, squares=True)
     test2 = utils.get_board(path, x)
-    # utils.showboard(cv2.Canny(test2, 20, 50))
-    # img = cv2.Canny(test2, 20, 50)
-    preprocess(test2)
-    #
-    # for y in range(len(test)):
-    #     preprocess(test[y])
-    # img = utils.get_board(path, x)
-    # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    # gray = cv2.bitwise_not(gray)
-    # th3 = cv2.adaptiveThreshold(gray,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,\
-    #             cv2.THRESH_BINARY,11,2)
-    # sqs = utils.squares_from_img(th3)
+    img = preprocess(test2)
+    pdb.set_trace()
+    sqs = utils.squares_from_img(img)
+    for s in sqs:
+        ocr(s)
+
 
 
 

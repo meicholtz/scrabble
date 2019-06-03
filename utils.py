@@ -61,9 +61,10 @@ def get_squares(file, num_boards):
     return np.asarray(squares)
 
 def squares_from_img(img):
+    w, h = img.shape[0], img.shape[1]
     temp = []
     # since scrabble is 15 by 15 i should be divisible by 15
-    i = 825
+    i = w
     # if you divide i by 15 (number of rows and columns in Scrabble) you get the width and height (pixels) of each square
     s = int(i / 15)
     for j in range(15):
