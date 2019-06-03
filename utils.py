@@ -118,6 +118,9 @@ def squares_to_board(squares):
     m = montage(squares[:225], grid_shape=(15, 15))
     return m
 
+def showboard(board):
+    cv2.imshow("board", board)
+    cv2.waitKey(0)
 
 def display_board(squares):
     squares = squares.reshape((-1, 55, 55))
