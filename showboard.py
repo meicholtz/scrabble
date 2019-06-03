@@ -9,12 +9,10 @@ from utils import *
 parser = argparse.ArgumentParser(description='Show a sample Scrabble board from a labeled image, using image warping.')
 parser.add_argument('labelfile', help='output text file from labeler')
 parser.add_argument('index', help='index of the sample board to show')
-parser.add_argument('-d', '--directory', type=str, help='directory containing images', default=datadir())
 
 
 def main(args):
     # Parse input arguments
-    root = os.path.expanduser(args.directory)
     labelfile = os.path.expanduser(args.labelfile)
     ind = int(args.index)
 
