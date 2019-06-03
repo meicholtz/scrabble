@@ -10,8 +10,8 @@ import pytesseract
 def nothing(x):
     pass
 
-def show(img):
-    cv2.imshow("show", img)
+def show(img, title="show"):
+    cv2.imshow(title, img)
     cv2.waitKey(0)
 
 def preprocess(image):
@@ -55,19 +55,32 @@ def ocr(square):
     # convert square to be ocr'd
     img = PIL.Image.fromarray(square)
     # get ocr label
-    label = pytesseract.image_to_string(img)
+    label = pytesseract.image_to_string(img, config='--psm 10')
     print(label)
     show(square)
 
+
+
+path = os.path.join(os.path.dirname(os.getcwd()), 'labels.txt')
+test2 = utils.get_board(path, 2)
+img = preprocess(test2)
+show(img, title=str(2))
+cv2.destroyAllWindows()
+sqs = utils.squares_from_img(img)
+for s in sqs:
+    w,h = s.shape[0], s.shape[1]
+    s = cv2.resize(s, (w*10, h*10))
+    ocr(s)
+
 for x in range(0, 100):
-    path = os.path.join(os.path.dirname(os.getcwd()), 'labels.txt')
-    test = utils.get_board(path, x, squares=True)
     test2 = utils.get_board(path, x)
     img = preprocess(test2)
-    pdb.set_trace()
-    sqs = utils.squares_from_img(img)
-    for s in sqs:
-        ocr(s)
+    show(img, title=str(x))
+    cv2.destroyAllWindows()
+    if(x == 2):
+        sqs = utils.squares_from_img(img)
+        for s in sqs:
+            ocr(s)
 
 
 
