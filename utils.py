@@ -35,13 +35,8 @@ def get_board(file, ind, sz=(640, 480)):
         sz : tuple of ints
             Size of scaled image prior to warping
     '''
-    # Get data from label file
-    imgfile, pts = readlabels(file, ind)
-
-    # Read, resize, and warp image
-    img = cv2.imread(imgfile)
-    img = cv2.resize(img, sz)
-    img = imwarp(img, pts)
+    imgfile, pts = readlabels(file, ind)  # get data from label file
+    img = improcess(imgfile, pts, sz)  # read, resize, and warp image
 
     return img
 
