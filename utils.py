@@ -30,7 +30,6 @@ def get_squares(file, num_boards, root=os.path.join(os.getcwd(), 'data')):
     pixels = 825  # should be divisible by 15 because scrabble is 15x15
     s = int(pixels / 15)  # width and height of squares (in pixels)
     for line in f.readlines():
-        strr = ''
         # split the line in the text file
         x = line.split()
         imfile = os.path.join(root, x[0])
@@ -38,18 +37,9 @@ def get_squares(file, num_boards, root=os.path.join(os.getcwd(), 'data')):
         # read and resize the image
         img = cv2.imread(imfile, 0)
         img = cv2.resize(img, (640, 480))
-        # store the 4 points in x
-        x = x[1:]
-        # convert the points to a string
-        pts1 = strr.join(x)
-        # eval converts the string to an array
-        pts1 = np.float32(eval(pts1))
-        # pts1 are the corners and pts2 is the width and height
-        pts2 = np.float32([[0, 0], [pixels, 0], [0, pixels], [pixels, pixels]])
-        # M is the perspective matrix
-        M = cv2.getPerspectiveTransform(pts1, pts2)
-        # dst is the resulting flat image
-        dst = cv2.warpPerspective(img, M, (pixels, pixels))
+        pts = np.float32(eval("".join(x[1:])))
+        img = imwarp(img, pts)
+
         # now we need to extract the tiles
         for j in range(15):
             for k in range(15):
@@ -63,9 +53,23 @@ def get_squares(file, num_boards, root=os.path.join(os.getcwd(), 'data')):
     return np.asarray(squares)
 
 
-def imwarp(img, pts, pixels):
-    '''Warp an image of a Scrabble board given an array of four corners.'''
-    pass
+def imwarp(img, pts, sz=(825, 825)):
+    '''Warp an image of a Scrabble board given an array of the board corners.
+
+        Parameters
+        ----------
+        img : np.array
+            Original image of Scrabble board
+
+        pts : np.array
+            4x2 array of points denoting the corners of the board in the image
+
+        sz : tuple
+            Desired size (in pixels) of output image. DEFAULT=(825,825)
+    '''
+    pts2 = np.float32([[0, 0], [sz[0], 0], [0, sz[1]], [sz[0], sz[1]]])
+    M = cv2.getPerspectiveTransform(pts, pts2)
+    return cv2.warpPerspective(img, M, sz)
 
 
 def squares_from_img(img):
