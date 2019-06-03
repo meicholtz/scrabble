@@ -1,40 +1,42 @@
+#!/usr/bin/env python
+
+'''Utility functions for Scrabble project.'''
+
 import numpy as np
 import cv2
 import os
 import pdb
 from skimage.util import montage
 
-def get_squares(file, num_boards):
-    """ function that takes in a text file and number of boards and returns the flattened, individual squares
-    in a numpy array.
 
+def get_squares(file, num_boards, root=os.path.join(os.getcwd(), 'data')):
+    """Extract individual squares (as a numpy array) from a select number of Scrabble boards.
 
-            Parameters
-            ----------
-            f : str
-                The pathname to a text file containing labeled Scrabble boards
+        Parameters
+        ----------
+        file : str
+            Path to text file containing labeled Scrabble boards
 
-            num_boards : int
-                Number of boards the user wishes to process
-                :rtype: object
-            """
+        num_boards : int
+            Number of boards the user wishes to process
 
-    directory = os.path.join(os.getcwd(),'data')
+        root : str
+            Path to root data directory. DEFAULT=data folder in top directory
+    """
+
     f = open(file)
     squares = []
     counter = 0
-    # since scrabble is 15 by 15 i should be divisible by 15
-    i = 825
-    # if you divide i by 15 (number of rows and columns in Scrabble) you get the width and height (pixels) of each square
-    s = int(i / 15)
+    pixels = 825  # should be divisible by 15 because scrabble is 15x15
+    s = int(pixels / 15)  # width and height of squares (in pixels)
     for line in f.readlines():
         strr = ''
         # split the line in the text file
         x = line.split()
-        img = directory + x[0]
+        imfile = os.path.join(root, x[0])
 
         # read and resize the image
-        img = cv2.imread(img, 0)
+        img = cv2.imread(imfile, 0)
         img = cv2.resize(img, (640, 480))
         # store the 4 points in x
         x = x[1:]
@@ -43,11 +45,11 @@ def get_squares(file, num_boards):
         # eval converts the string to an array
         pts1 = np.float32(eval(pts1))
         # pts1 are the corners and pts2 is the width and height
-        pts2 = np.float32([[0, 0], [i, 0], [0, i], [i, i]])
+        pts2 = np.float32([[0, 0], [pixels, 0], [0, pixels], [pixels, pixels]])
         # M is the perspective matrix
         M = cv2.getPerspectiveTransform(pts1, pts2)
         # dst is the resulting flat image
-        dst = cv2.warpPerspective(img, M, (i, i))
+        dst = cv2.warpPerspective(img, M, (pixels, pixels))
         # now we need to extract the tiles
         for j in range(15):
             for k in range(15):
@@ -60,12 +62,18 @@ def get_squares(file, num_boards):
     squares = np.uint8(squares)
     return np.asarray(squares)
 
+
+def imwarp(img, pts, pixels):
+    '''Warp an image of a Scrabble board given an array of four corners.'''
+    pass
+
+
 def squares_from_img(img):
     temp = []
-    # since scrabble is 15 by 15 i should be divisible by 15
-    i = 825
-    # if you divide i by 15 (number of rows and columns in Scrabble) you get the width and height (pixels) of each square
-    s = int(i / 15)
+    # since scrabble is 15 by 15 pixels should be divisible by 15
+    pixels = 825
+    # if you divide pixels by 15 (number of rows and columns in Scrabble) you get the width and height (pixels) of each square
+    s = int(pixels / 15)
     for j in range(15):
         for k in range(15):
             square = np.float32(img[s * j: s + s * j, s * k: s + s * k])
@@ -79,13 +87,13 @@ def get_board(file, index, squares=False):
     if(os.path.basename(os.getcwd()) != 'scrabble'):
         root = os.path.join(os.path.dirname(os.getcwd()), 'data/')
     else:
-        root = os.path.join(os.getcwd(),'data/')
+        root = os.path.join(os.getcwd(), 'data/')
     labelfile = file
     ind = index
 
     # Read data from labelfile
     x = np.loadtxt(labelfile, dtype=str, skiprows=ind, max_rows=1)
-    imagefile = root + x[0] # full path to raw image
+    imagefile = root + x[0]  # full path to raw image
     pts = eval(''.join(x[1:]))  # corners of the board
     # Read image
     img = cv2.imread(imagefile)
@@ -100,10 +108,10 @@ def get_board(file, index, squares=False):
     img2 = cv2.resize(img2, (825, 825))
     if(squares):
         temp = []
-        # since scrabble is 15 by 15 i should be divisible by 15
-        i = 825
-        # if you divide i by 15 (number of rows and columns in Scrabble) you get the width and height (pixels) of each square
-        s = int(i / 15)
+        # since scrabble is 15 by 15 pixels should be divisible by 15
+        pixels = 825
+        # if you divide pixels by 15 (number of rows and columns in Scrabble) you get the width and height (pixels) of each square
+        s = int(pixels / 15)
         for j in range(15):
             for k in range(15):
                 square = np.float32(img2[s * j: s + s * j, s * k: s + s * k])
@@ -121,7 +129,6 @@ def squares_to_board(squares):
 
 def display_board(squares):
     squares = squares.reshape((-1, 55, 55))
-    m = montage(squares[:225], grid_shape=(15,15))
+    m = montage(squares[:225], grid_shape=(15, 15))
     cv2.imshow("Montage", m)
     cv2.waitKey(0)
-
