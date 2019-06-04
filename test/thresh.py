@@ -6,13 +6,16 @@ import numpy as np
 import PIL
 import pytesseract
 
-# this is for sliders
+# callback function for Threshold and Thinning sliders
 def nothing(x):
     pass
 
+# callback function for Invert slider
 def invert_img(x):
     preprocess.img = 255 - preprocess.img
 
+# callback function for Adaptive Threshold slider
+# x is the value of the slider
 def adaptive_threshold(x):
     if x == 0:
         preprocess.img = preprocess.org
@@ -38,7 +41,7 @@ def preprocess(image):
     cv2.createTrackbar('Threshold', 'image', 60, 255, nothing)
     cv2.createTrackbar('Thinning', 'image', 0, 5, nothing)
     # create a slider that will invert the colors of the image
-    cv2.createTrackbar('invert', 'image', 0, 1, invert_img)
+    cv2.createTrackbar('Invert', 'image', 0, 1, invert_img)
     kernel = np.ones((2, 2), np.uint8)
     while True:
         # check the positions of the trackbars and store them
