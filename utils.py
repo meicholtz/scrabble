@@ -13,12 +13,7 @@ TILES = 15
 
 def datadir():
     '''Get full path to local data directory.'''
-    if os.path.basename(os.getcwd()) != 'scrabble':
-        root = os.path.join(os.path.dirname(os.getcwd()), 'data')
-    else:
-        root = os.path.join(os.getcwd(), 'data')
-
-    return root
+    return os.path.join(home(), 'data')
 
 
 def get_board(file, ind, sz=(640, 480)):
@@ -80,6 +75,16 @@ def get_squares(file, ind):
             break
     squares = np.uint8(squares)
     return np.asarray(squares)
+
+
+def home():
+    '''Get full path to root directory of Scrabble project code.'''
+    if os.path.basename(os.getcwd()) != 'scrabble':
+        root = os.path.dirname(os.getcwd())
+    else:
+        root = os.getcwd()
+
+    return root
 
 
 def improcess(file, pts, sz=(640, 480)):
@@ -150,6 +155,7 @@ def readlabels(file, ind):
         ind : int or 'all'
             Index of the file to read. Set ind = 'all' to read all available boards
     '''
+    # TODO: Add "all" option for ind!
     x = np.loadtxt(file, dtype=str, skiprows=ind, max_rows=1)
     imgfile = os.path.join(datadir(), x[0])  # full path to raw image
     pts = np.float32(eval(''.join(x[1:])))  # corners of the board
