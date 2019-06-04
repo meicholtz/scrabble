@@ -11,11 +11,6 @@ from skimage.util import montage
 TILES = 15
 
 
-def datadir():
-    '''Get full path to local data directory.'''
-    return os.path.join(home(), 'data')
-
-
 def get_board(file, ind, sz=(640, 480)):
     '''Get warped image of a user-specified Scrabble board via labeled data.
 
@@ -56,7 +51,7 @@ def get_squares(file, ind):
     for line in f.readlines():
         # split the line in the text file
         x = line.split()
-        imgfile = os.path.join(datadir(), x[0])
+        imgfile = os.path.join(home(), 'data', x[0])
 
         # Read, resize, and warp the image
         img = cv2.imread(imgfile, 0)
@@ -157,7 +152,7 @@ def readlabels(file, ind):
     '''
     # TODO: Add "all" option for ind!
     x = np.loadtxt(file, dtype=str, skiprows=ind, max_rows=1)
-    imgfile = os.path.join(datadir(), x[0])  # full path to raw image
+    imgfile = os.path.join(home(), 'data', x[0])  # full path to raw image
     pts = np.float32(eval(''.join(x[1:])))  # corners of the board
 
     return imgfile, pts
