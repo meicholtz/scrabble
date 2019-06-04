@@ -4,7 +4,7 @@ Worked on getting a function that takes in an already flattened board and splits
 Having issues with this function in utils.py: def squares_from_img(img)
 
 
-Monday, June 3rd, 2018
+Monday, June 3rd, 2019
 Working in utils.py
     - added way to load squares from a path
     - made paths universal
@@ -12,3 +12,10 @@ Working in utils.py
 thresh.py
     - created sliders that adjust threshold, thinning, and invert colors
     - saves preprocessed image when the user
+
+
+Tuesday, June 4th, 2019
+thresh.py
+    - changed the invert image to a callback function
+    - added an adaptive threshold callback function
+    - added comments to code
