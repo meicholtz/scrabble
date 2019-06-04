@@ -11,3 +11,4 @@ Working in utils.py
     - have checks to see whether or not the user is working in the main folder
 thresh.py
     - created sliders that adjust threshold, thinning, and invert colors
+    - saves preprocessed image when the user
