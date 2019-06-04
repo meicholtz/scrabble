@@ -17,6 +17,8 @@ def invert_img(x):
 # callback function for Adaptive Threshold slider
 # x is the value of the slider
 def adaptive_threshold(x):
+    # preprocess.org is the original image before processing
+    # preprocess.img is how the image gets displayed
     if x == 0:
         preprocess.img = preprocess.org
     elif x == 1:
