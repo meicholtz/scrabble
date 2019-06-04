@@ -28,6 +28,7 @@ def adaptive_threshold(x):
         preprocess.img = cv2.adaptiveThreshold(preprocess.org, 255, cv2.ADAPTIVE_THRESH_MEAN_C, \
                                                cv2.THRESH_BINARY, 11, 2)
 
+
 # take in an image, display it to the user with sliders for filtering the image
 def preprocess(image):
     # get the width and height
@@ -35,7 +36,7 @@ def preprocess(image):
     # make image BW
     preprocess.img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # Resize the img
-    preprocess.img = cv2.resize(preprocess.img, (w - 200, h - 200))
+    preprocess.img = cv2.resize(preprocess.img, (w - 250, h - 250))
     preprocess.org = preprocess.img
     cv2.namedWindow('image')
     # create trackbar for threshold and thinning parameters
@@ -79,8 +80,6 @@ for x in range(0, 100):
     test2 = utils.get_board(path, x)
     # preprocess the image
     img = preprocess(test2)
-    # display the processed image
-    utils.imshow(img, name=str(2))
     cv2.destroyAllWindows()
     # get the individual tiles from the image
     sqs = utils.squares_from_img(img)
