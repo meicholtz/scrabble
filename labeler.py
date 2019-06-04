@@ -6,13 +6,15 @@ import cv2
 import argparse
 import glob
 import os
-
+from utils import *
 
 parser = argparse.ArgumentParser(description='Double click to place a point. Place four points, one at each corner of the Scrabble board, in the following order: top left, top right, bottom left, bottom right. Press ESC to skip an image. Press Q to quit.')
-parser.add_argument('-d', '--directory', type=str, help='the input directory containing images to label', default=os.path.join(os.getcwd(), 'data'))
+parser.add_argument('-d', '--directory', type=str, help='the input directory containing images to label', default=os.path.join(home(), 'data'))
 parser.add_argument('-f', '--file', help='the output file to write labels', type=str, default=os.path.join(os.getcwd(), 'labels.txt'))
 parser.add_argument('-r', '--reverse', help='label images in reverse order', action="store_true")
 parser.add_argument('-g', '--grayscale', help='show images as grayscale', action="store_true")
+
+IMAGE_SIZE = (640, 480)  # resize the image prior to labeling
 
 
 def main(args):
@@ -49,7 +51,7 @@ def main(args):
         if not os.path.basename(imagefile) in labeled:
             # Load image and setup window
             img = cv2.imread(imagefile, colorflag)
-            img = cv2.resize(img, (640, 480))
+            img = cv2.resize(img, IMAGE_SIZE)
             cv2.namedWindow('image')
             cv2.setWindowTitle('image', imagefile)
 
@@ -68,8 +70,13 @@ def main(args):
                     f.close()
                     exit()
                 elif len(pts) == 4:
-                    # add the four points and file name to text file
-                    f.write(os.path.basename(imagefile) + " " + str(pts) + '\n')
+                    # Append filename and four points to text file
+                    print(os.path.basename(imagefile), end=" ", file=f)
+                    pts = np.float32(pts) / IMAGE_SIZE  # normalize
+                    pts = pts.flatten()
+                    for i in range(len(pts) - 1):
+                        print("{0:0.4f}".format(round(pts[i], 4)), end=" ", file=f)
+                    print("{0:0.4f}".format(round(pts[-1], 4)), file=f)
                     f.flush()  # flush saves the file
                     pts = []
                     break

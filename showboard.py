@@ -20,7 +20,8 @@ def main(args):
     imgfile, pts = readlabels(labelfile, ind)
 
     # Process image
-    img = improcess(imgfile, pts)
+    img = cv2.imread(imgfile)
+    img = imwarp(img, pts)
 
     # Show results
     imshow(img, imgfile)

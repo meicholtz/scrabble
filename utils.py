@@ -5,13 +5,13 @@
 import numpy as np
 import cv2
 import os
-import ipdb
 from skimage.util import montage
+import ipdb
 
 TILES = 15
 
 
-def get_board(file, ind, sz=(640, 480)):
+def get_board(file, ind):
     '''Get warped image of a user-specified Scrabble board via labeled data.
 
         Parameters
@@ -21,14 +21,10 @@ def get_board(file, ind, sz=(640, 480)):
 
         ind : int
             Index of the board the user wishes to process
-
-        sz : tuple of ints
-            Size of scaled image prior to warping
     '''
     imgfile, pts = readlabels(file, ind)  # get data from label file
-    img = improcess(imgfile, pts, sz)  # read, resize, and warp image
-
-    return img
+    img = cv2.imread(imgfile)  # read image from file
+    return imwarp(img, pts)  # return warped image
 
 
 def get_squares(file, ind):
@@ -82,27 +78,6 @@ def home():
     return root
 
 
-def improcess(file, pts, sz=(640, 480)):
-    '''Read, resize, and warp an image of a Scrabble board.
-
-        Parameters
-        ----------
-        file : str
-            Path to file containing image of Scrabble board
-
-        pts : np.array
-            4x2 array of points denoting the corners of the board in the image
-
-        sz : tuple of ints
-            Size of scaled image prior to warping [DEFAULT = (640, 480)]
-    '''
-    img = cv2.imread(file)
-    img = cv2.resize(img, sz)
-    img = imwarp(img, pts)
-
-    return img
-
-
 def imshow(img, name="Scrabble Board"):
     '''Display image of Scrabble board and wait for user to press a key.
 
@@ -134,8 +109,9 @@ def imwarp(img, pts, sz=(825, 825)):
     '''
     if type(sz) != tuple:
         sz = (sz, sz)
+    pts1 = np.float32(pts * img.shape[:2][::-1])  # "unnormalize" coordinates
     pts2 = np.float32([[0, 0], [sz[0], 0], [0, sz[1]], [sz[0], sz[1]]])
-    M = cv2.getPerspectiveTransform(pts, pts2)
+    M = cv2.getPerspectiveTransform(pts1, pts2)
     return cv2.warpPerspective(img, M, sz)
 
 
@@ -153,7 +129,7 @@ def readlabels(file, ind):
     # TODO: Add "all" option for ind!
     x = np.loadtxt(file, dtype=str, skiprows=ind, max_rows=1)
     imgfile = os.path.join(home(), 'data', x[0])  # full path to raw image
-    pts = np.float32(eval(''.join(x[1:])))  # corners of the board
+    pts = np.float32(x[1:]).reshape(-1, 2)  # corners of the board
 
     return imgfile, pts
 
