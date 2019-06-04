@@ -12,6 +12,17 @@ def nothing(x):
 
 def invert_img(x):
     preprocess.img = 255 - preprocess.img
+
+def adaptive_threshold(x):
+    if x == 0:
+        preprocess.img = preprocess.org
+    elif x == 1:
+        preprocess.img = cv2.adaptiveThreshold(preprocess.org, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, \
+                                   cv2.THRESH_BINARY, 11, 2)
+    elif x == 2:
+        preprocess.img = cv2.adaptiveThreshold(preprocess.org, 255, cv2.ADAPTIVE_THRESH_MEAN_C, \
+                                               cv2.THRESH_BINARY, 11, 2)
+
 # take in an image, display it to the user with sliders for filtering the image
 def preprocess(image):
     # get the width and height
@@ -19,14 +30,15 @@ def preprocess(image):
     # make image BW
     preprocess.img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # Resize the img
-    preprocess.img = cv2.resize(preprocess.img, (w - 150, h - 150))
+    preprocess.img = cv2.resize(preprocess.img, (w - 200, h - 200))
+    preprocess.org = preprocess.img
     cv2.namedWindow('image')
     # create trackbar for threshold and thinning parameters
+    cv2.createTrackbar('Adaptive Threshold', 'image', 0, 2, adaptive_threshold)
     cv2.createTrackbar('Threshold', 'image', 60, 255, nothing)
     cv2.createTrackbar('Thinning', 'image', 0, 5, nothing)
     # create a slider that will invert the colors of the image
     cv2.createTrackbar('invert', 'image', 0, 1, invert_img)
-    flag = True
     kernel = np.ones((2, 2), np.uint8)
     while True:
         # check the positions of the trackbars and store them
