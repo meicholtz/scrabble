@@ -7,15 +7,8 @@ import PIL
 import pytesseract
 
 # this is for sliders
-
-
 def nothing(x):
     pass
-
-# simple method to show an image
-def show(img, title="show"):
-    cv2.imshow(title, img)
-    cv2.waitKey(0)
 
 
 # take in an image, display it to the user with sliders for filtering the image
