@@ -77,7 +77,6 @@ def preprocess(image):
 
 def ocr(square):
     # TODO: look for ratio of black to white pixels and determine if tile is a blank, empty, or non-letter tile
-    print(black_pixel_percentage(square))
     if black_pixel_percentage(square) > .25:
         return BLANK_LABEL
     # convert square to be ocr'd
@@ -114,7 +113,11 @@ def black_pixel_percentage(img):
 path = os.path.join(os.path.dirname(os.getcwd()), 'labels.txt')
 for ind in range(0, 100):
     imgname = utils.readlabels(path, ind)[0]
-    print(imgname)
+    imgname = os.path.splitext(imgname)[0]
+    txtfile = imgname + '.txt'
+    f = open(txtfile, "a+")
+    if (not os.stat(txtfile).st_size == 0):
+        continue
     # get the image of the board
     test2 = utils.get_board(path, ind)
     w, h = test2.shape[0], test2.shape[1]
@@ -129,6 +132,7 @@ for ind in range(0, 100):
     swh = sqs.shape[3]
     sq_width_height = float(swh / w)
     # for each tile:
+    counter = 1
     for y in range(0,15):
         for x in range(0,15):
             center_x = x * sq_width_height
@@ -136,9 +140,12 @@ for ind in range(0, 100):
             center_y = y * sq_width_height
             center_y = float(center_y / h)
             text = ocr(sqs[y][x])
-            label = "{} {} {} {} {}".format(text, center_x, center_x, sq_width_height, sq_width_height)
-            print(label)
-            utils.imshow(sqs[y][x])
+            label = "{} {} {} {} {} \n".format(text, center_x, center_x, sq_width_height, sq_width_height)
+            f.write(label)
+            print("Tile Number: {}".format(counter))
+            counter += 1
+    f.close()
+    exit()
 
 
 
