@@ -4,6 +4,7 @@ import pdb
 import os
 import numpy as np
 import PIL
+import re
 import pytesseract
 
 # callback function for Threshold and Thinning sliders
@@ -74,13 +75,30 @@ def preprocess(image):
 
 
 def ocr(square):
+    # TODO: look for ratio of black to white pixels and determine if tile is a blank, empty, or non-letter tile
     # convert square to be ocr'd
     img = PIL.Image.fromarray(square)
     # config string for tesseract
     tessdata_dir_config = '--tessdata-dir "/usr/local/Cellar/tesseract/4.0.0_1/share/tessdata" --psm 10  --oem 2 '
     # get ocr label
     label = pytesseract.image_to_string(img, config=tessdata_dir_config)
-    return label
+    return filter_ocr(label)
+
+def filter_ocr(text):
+    if(text == ''):
+        return 'NONE'
+    # grab the first character
+    t = text[0]
+    # remove non letter text
+    regex = re.compile('[^a-zA-Z]')
+    t = regex.sub('', t)
+    if (t == ''):
+        return 'NONE'
+    # capitalize letter
+    t = t.capitalize()
+    return t
+
+
 
 
 '''Main Function'''
@@ -91,30 +109,27 @@ for ind in range(0, 100):
     # get the image of the board
     test2 = utils.get_board(path, ind)
     w, h = test2.shape[0], test2.shape[1]
-    # preprocess the image
+    # pre-process the image
     img = preprocess(test2)
+    utils.imshow(img)
     cv2.destroyAllWindows()
     # get the individual tiles from the image
     sqs = utils.squares_from_img(img)
+    # reshape to 4 dimensions so that x and y position can be tracked
+    sqs = sqs.reshape((15,15,sqs.shape[1],sqs.shape[2]))
+    sq_width_height = sqs.shape[3]
+    sq_width_height = float(sq_width_height / w)
     # for each tile:
-    sq = 0
-    for s in sqs:
-        # get width and height
-        s_w,s_h = s.shape[0], s.shape[1]
-        # get the float values for width and height
-        x, y = float(s_w / w), float(s_h / h)
-        x_center = float(s_w / 2 * w) + s_w * sq
-        y_center = float(s_w / 2 * w) + s_w * sq
-        if sq == 15:
-            sq = 0
-        else:
-            sq += 1
-        # get the ocr of the tile
-        print(ocr(s))
-        cv2.imshow("square", s)
-        k = cv2.waitKey(0) & 0xFF
-        if k == 27:
-            cv2.destroyAllWindows()
-            break
+    for y in range(0,15):
+        for x in range(0,15):
+            center_x = x * sq_width_height
+            center_x = float(center_x / w)
+            center_y = y * sq_width_height
+            center_y = float(center_y / h)
+            text = ocr(sqs[x][y])
+            label = "{} {} {} {} {}".format(text, center_x, center_x, sq_width_height, sq_width_height)
+            print(label)
+            utils.imshow(sqs[y][x])
+
 
 
