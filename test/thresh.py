@@ -7,6 +7,8 @@ import PIL
 import re
 import pytesseract
 
+
+BLANK_LABEL = 'NONE'
 # callback function for Threshold and Thinning sliders
 def nothing(x):
     pass
@@ -49,7 +51,7 @@ def preprocess(image):
     cv2.createTrackbar('Thinning', 'image', 0, 5, nothing)
     # create a slider that will invert the colors of the image
     cv2.createTrackbar('Invert', 'image', 0, 1, invert_img)
-    kernel = np.ones((3, 3), np.uint8)
+    kernel = np.ones((2, 2), np.uint8)
     preprocess.invert = False
     while True:
         # check the positions of the trackbars and store them
@@ -75,6 +77,9 @@ def preprocess(image):
 
 def ocr(square):
     # TODO: look for ratio of black to white pixels and determine if tile is a blank, empty, or non-letter tile
+    print(black_pixel_percentage(square))
+    if black_pixel_percentage(square) > .25:
+        return BLANK_LABEL
     # convert square to be ocr'd
     img = PIL.Image.fromarray(square)
     # config string for tesseract
@@ -85,19 +90,22 @@ def ocr(square):
 
 def filter_ocr(text):
     if(text == ''):
-        return 'NONE'
+        return BLANK_LABEL
     # grab the first character
     t = text[0]
     # remove non letter text
     regex = re.compile('[^a-zA-Z]')
     t = regex.sub('', t)
     if (t == ''):
-        return 'NONE'
+        return BLANK_LABEL
     # capitalize letter
     t = t.capitalize()
     return t
 
 
+def black_pixel_percentage(img):
+    w = img.shape[1]
+    return float(1 - cv2.countNonZero(img) / w**2)
 
 
 '''Main Function'''
@@ -105,6 +113,8 @@ def filter_ocr(text):
 # get the path of the labels text file
 path = os.path.join(os.path.dirname(os.getcwd()), 'labels.txt')
 for ind in range(0, 100):
+    imgname = utils.readlabels(path, ind)[0]
+    print(imgname)
     # get the image of the board
     test2 = utils.get_board(path, ind)
     w, h = test2.shape[0], test2.shape[1]
@@ -128,7 +138,6 @@ for ind in range(0, 100):
             text = ocr(sqs[y][x])
             label = "{} {} {} {} {}".format(text, center_x, center_x, sq_width_height, sq_width_height)
             print(label)
-            print("Percentage of black pixels: {0:.0%}".format(float(1 - cv2.countNonZero(sqs[y][x]) / swh**2)))
             utils.imshow(sqs[y][x])
 
 
