@@ -97,13 +97,18 @@ for ind in range(0, 100):
     # get the individual tiles from the image
     sqs = utils.squares_from_img(img)
     # for each tile:
-    sq = 1
+    sq = 0
     for s in sqs:
         # get width and height
         s_w,s_h = s.shape[0], s.shape[1]
         # get the float values for width and height
         x, y = float(s_w / w), float(s_h / h)
-        
+        x_center = float(s_w / 2 * w) + s_w * sq
+        y_center = float(s_w / 2 * w) + s_w * sq
+        if sq == 15:
+            sq = 0
+        else:
+            sq += 1
         # get the ocr of the tile
         print(ocr(s))
         cv2.imshow("square", s)
