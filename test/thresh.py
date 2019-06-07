@@ -1,6 +1,6 @@
 import cv2
 import utils
-import pdb
+import ipdb
 import os
 import numpy as np
 import PIL
@@ -73,7 +73,6 @@ def preprocess(image):
             return temp2
 
 
-
 def ocr(square):
     # TODO: look for ratio of black to white pixels and determine if tile is a blank, empty, or non-letter tile
     # convert square to be ocr'd
@@ -117,8 +116,8 @@ for ind in range(0, 100):
     sqs = utils.squares_from_img(img)
     # reshape to 4 dimensions so that x and y position can be tracked
     sqs = sqs.reshape((15,15,sqs.shape[1],sqs.shape[2]))
-    sq_width_height = sqs.shape[3]
-    sq_width_height = float(sq_width_height / w)
+    swh = sqs.shape[3]
+    sq_width_height = float(swh / w)
     # for each tile:
     for y in range(0,15):
         for x in range(0,15):
@@ -126,9 +125,10 @@ for ind in range(0, 100):
             center_x = float(center_x / w)
             center_y = y * sq_width_height
             center_y = float(center_y / h)
-            text = ocr(sqs[x][y])
+            text = ocr(sqs[y][x])
             label = "{} {} {} {} {}".format(text, center_x, center_x, sq_width_height, sq_width_height)
             print(label)
+            print("Percentage of black pixels: {0:.0%}".format(float(1 - cv2.countNonZero(sqs[y][x]) / swh**2)))
             utils.imshow(sqs[y][x])
 
 
