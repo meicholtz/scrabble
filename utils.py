@@ -133,8 +133,8 @@ def readlabels(file, ind=0):
         for x in boards:
             imgfile = os.path.join(home(), 'data', x[0])  # full path to raw image
             pts = np.float32(x[1:]).reshape(-1, 2)  # corners of the board
-            imgs.append(imgfile)
-            all_pts.append(pts)
+            imgs.append(imgfile)  # add full path to array of all paths
+            all_pts.append(pts)  # add corners to array of all corners
         return np.asarray(imgs), np.asarray(all_pts)
     else:
         x = np.loadtxt(file, dtype=str, skiprows=ind, max_rows=1)
