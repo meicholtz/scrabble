@@ -115,7 +115,7 @@ def imwarp(img, pts, sz=(825, 825)):
     return cv2.warpPerspective(img, M, sz)
 
 
-def readlabels(file, ind):
+def readlabels(file, ind=0):
     '''Read labeled information (e.g. image filename, clicked corners) from file.
 
         Parameters
@@ -124,14 +124,23 @@ def readlabels(file, ind):
             Path to text file containing labeled Scrabble board information
 
         ind : int or 'all'
-            Index of the file to read. Set ind = 'all' to read all available boards
+            Index of the file to read. Set ind = 'all' to read all available boards. Default is first board (ind=0).
     '''
-    # TODO: Add "all" option for ind!
-    x = np.loadtxt(file, dtype=str, skiprows=ind, max_rows=1)
-    imgfile = os.path.join(home(), 'data', x[0])  # full path to raw image
-    pts = np.float32(x[1:]).reshape(-1, 2)  # corners of the board
-
-    return imgfile, pts
+    if (ind == 'all'):
+        boards = np.loadtxt(file, dtype=str)
+        imgs = []
+        all_pts = []
+        for x in boards:
+            imgfile = os.path.join(home(), 'data', x[0])  # full path to raw image
+            pts = np.float32(x[1:]).reshape(-1, 2)  # corners of the board
+            imgs.append(imgfile)
+            all_pts.append(pts)
+        return np.asarray(imgs), np.asarray(all_pts)
+    else:
+        x = np.loadtxt(file, dtype=str, skiprows=ind, max_rows=1)
+        imgfile = os.path.join(home(), 'data', x[0])  # full path to raw image
+        pts = np.float32(x[1:]).reshape(-1, 2)  # corners of the board
+        return imgfile, pts
 
 
 def squares_from_img(img):
