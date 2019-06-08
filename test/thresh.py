@@ -135,12 +135,12 @@ for ind in range(0, 100):
     counter = 1
     for y in range(0,15):
         for x in range(0,15):
-            center_x = x * sq_width_height
+            center_x = x * swh
             center_x = float(center_x / w)
-            center_y = y * sq_width_height
+            center_y = y * swh
             center_y = float(center_y / h)
             text = ocr(sqs[y][x])
-            label = "{} {} {} {} {} \n".format(text, center_x, center_x, sq_width_height, sq_width_height)
+            label = "{} {} {} {} {} \n".format(text, center_x, center_y, sq_width_height, sq_width_height)
             f.write(label)
             print("Tile Number: {}".format(counter))
             counter += 1
