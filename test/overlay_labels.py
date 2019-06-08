@@ -21,7 +21,7 @@ def main(args):
     name = args.name
     img_name = name + ".jpg"
     label_name = name + ".txt"
-    f = open(os.path.join(d, label_name))
+    f = open(os.path.join(ld, label_name))
     f.seek(0)
     img = cv2.imread(os.path.join(d, img_name))
     pts = np.array([[0.2547, 0.0854], [0.7984, 0.0583], [0.1500, 0.8979], [0.8781, 0.9042]])
@@ -29,7 +29,6 @@ def main(args):
     overlay_text(img, f)
 
 def overlay_text(img, lf):
-    l = 0
     for line in lf.readlines():
         if(line.split(' ')[0] == 'NONE'):
             continue

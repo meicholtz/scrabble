@@ -67,16 +67,28 @@ def preprocess(image):
             break
         # if the user presses D stop the preprocessing and return the processed image
         if k == ord('d'):
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            if (preprocess.invert):
+            if preprocess.invert:
                 image = 255 - image
-            ret, temp = cv2.threshold(image, x, 255, cv2.THRESH_BINARY)
-            temp2 = cv2.dilate(temp, kernel, iterations=y)
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+            t = cv2.getTrackbarPos('Adaptive Threshold', 'image')
+            if t == 1:
+                image = cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, \
+                                                      cv2.THRESH_BINARY, 11, 2)
+                temp2 = cv2.dilate(image, kernel, iterations=y)
+            elif t == 2:
+                image = cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_MEAN_C, \
+                                                       cv2.THRESH_BINARY, 11, 2)
+                temp2 = cv2.dilate(image, kernel, iterations=y)
+            else:
+                ret, temp = cv2.threshold(image, x, 255, cv2.THRESH_BINARY)
+                temp2 = cv2.dilate(temp, kernel, iterations=y)
+            # if (preprocess.invert):
+            #     temp2 = 255 - temp2
             return temp2
 
 
 def ocr(square):
-    # TODO: look for ratio of black to white pixels and determine if tile is a blank, empty, or non-letter tile
     if black_pixel_percentage(square) > .25:
         return BLANK_LABEL
     # convert square to be ocr'd
@@ -113,8 +125,10 @@ def black_pixel_percentage(img):
 path = os.path.join(os.path.dirname(os.getcwd()), 'labels.txt')
 for ind in range(0, 100):
     imgname = utils.readlabels(path, ind)[0]
+    imgname = os.path.basename(imgname)
     imgname = os.path.splitext(imgname)[0]
     txtfile = imgname + '.txt'
+    txtfile = os.path.join(utils.home(), 'labels', txtfile)
     f = open(txtfile, "a+")
     if (not os.stat(txtfile).st_size == 0):
         continue
