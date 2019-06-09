@@ -10,8 +10,8 @@ parser.add_argument('-ld', '--labeldirectory', type=str, help='the directory con
                     default=os.path.join(utils.home(), 'labels'))
 parser.add_argument('-d', '--datadirectory', type=str, help='the directory containing the image',
                     default=os.path.join(utils.home(), 'data'))
-parser.add_argument('-n', '--name', type=str, help='the name of an image with no extension ex: Photo_2005-08-20_006',
-                    default='Photo_2005-08-20_006')
+parser.add_argument('-n', '--name', type=str, help='the name of an image with no extension ex: Photo_2005-08-20_006 '
+                                                   'leave empty to cycle through a directory')
 
 def main(args):
     # TODO: go through a directory of text files display instead of one file / image at a time
@@ -19,6 +19,9 @@ def main(args):
     d = os.path.expanduser(args.datadirectory)
     assert os.path.isdir(ld), "{} is not a valid directory".format(ld)
     assert os.path.isdir(d), "{} is not a valid directory".format(d)
+    directory = False
+    if(args.name is None):
+        directory = True
     name = args.name
     img_name = name + ".jpg"
     label_name = name + ".txt"
