@@ -22,15 +22,17 @@ def invert_img(x):
 # callback function for Adaptive Threshold slider
 # x is the value of the slider
 def adaptive_threshold(x):
+    # TODO: KNOWN ISSUE - adaptive threshold undoes inversion of image and messes up the invert flag.
+    # Inversion must be done after adaptive thresholding
     # preprocess.org is the original image before processing
     # preprocess.img is how the image gets displayed
     if x == 0:
         preprocess.img = preprocess.org
     elif x == 1:
-        preprocess.img = cv2.adaptiveThreshold(preprocess.org, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, \
+        preprocess.img = cv2.adaptiveThreshold(preprocess.img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, \
                                    cv2.THRESH_BINARY, 11, 2)
     elif x == 2:
-        preprocess.img = cv2.adaptiveThreshold(preprocess.org, 255, cv2.ADAPTIVE_THRESH_MEAN_C, \
+        preprocess.img = cv2.adaptiveThreshold(preprocess.img, 255, cv2.ADAPTIVE_THRESH_MEAN_C, \
                                                cv2.THRESH_BINARY, 11, 2)
 
 
