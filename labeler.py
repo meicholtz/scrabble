@@ -10,7 +10,7 @@ from utils import *
 
 parser = argparse.ArgumentParser(description='Double click to place a point. Place four points, one at each corner of the Scrabble board, in the following order: top left, top right, bottom left, bottom right. Press ESC to skip an image. Press Q to quit.')
 parser.add_argument('-d', '--directory', type=str, help='the input directory containing images to label', default=os.path.join(home(), 'data'))
-parser.add_argument('-f', '--file', help='the output file to write labels', type=str, default=os.path.join(os.getcwd(), 'labels.txt'))
+parser.add_argument('-f', '--file', help='the output file to write labels', type=str, default=os.path.join(os.path.join(home(), 'labels'), 'labels.txt'))
 parser.add_argument('-r', '--reverse', help='label images in reverse order', action="store_true")
 parser.add_argument('-g', '--grayscale', help='show images as grayscale', action="store_true")
 

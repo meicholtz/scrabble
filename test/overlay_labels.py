@@ -19,18 +19,31 @@ def main(args):
     d = os.path.expanduser(args.datadirectory)
     assert os.path.isdir(ld), "{} is not a valid directory".format(ld)
     assert os.path.isdir(d), "{} is not a valid directory".format(d)
-    directory = False
     if(args.name is None):
-        directory = True
-    name = args.name
-    img_name = name + ".jpg"
-    label_name = name + ".txt"
-    f = open(os.path.join(ld, label_name))
-    f.seek(0)
-    img = cv2.imread(os.path.join(d, img_name))
-    pts = np.array([[0.2547, 0.0854], [0.7984, 0.0583], [0.1500, 0.8979], [0.8781, 0.9042]])
-    img = utils.imwarp(img, pts)
-    overlay_text(img, f)
+        for file in os.listdir(ld):
+            if(file == 'labels.txt' or file == 'labels1.txt'):
+                continue
+            if file.endswith(".txt"):
+                name = os.path.splitext(file)[0]
+                img_name = name + ".jpg"
+                label_name = name + ".txt"
+                f = open(os.path.join(ld, label_name))
+                f.seek(0)
+                img = cv2.imread(os.path.join(d, img_name))
+                # TODO: GET POINTS FROM LABEL FILE
+                pts = np.array([[0.2547, 0.0854], [0.7984, 0.0583], [0.1500, 0.8979], [0.8781, 0.9042]])
+                img = utils.imwarp(img, pts)
+                overlay_text(img, f)
+    else:
+        name = args.name
+        img_name = name + ".jpg"
+        label_name = name + ".txt"
+        f = open(os.path.join(ld, label_name))
+        f.seek(0)
+        img = cv2.imread(os.path.join(d, img_name))
+        pts = np.array([[0.2547, 0.0854], [0.7984, 0.0583], [0.1500, 0.8979], [0.8781, 0.9042]])
+        img = utils.imwarp(img, pts)
+        overlay_text(img, f)
 
 def overlay_text(img, lf):
     for line in lf.readlines():

@@ -124,7 +124,7 @@ def black_pixel_percentage(img):
 '''Main Function'''
 
 # get the path of the labels text file
-path = os.path.join(os.path.dirname(os.getcwd()), 'labels.txt')
+path = os.path.join(os.path.join(utils.home(), 'labels'), 'labels.txt')
 for ind in range(0, 100):
     imgname = utils.readlabels(path, ind)[0]
     imgname = os.path.basename(imgname)
