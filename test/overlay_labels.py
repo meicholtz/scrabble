@@ -14,6 +14,7 @@ parser.add_argument('-n', '--name', type=str, help='the name of an image with no
                     default='Photo_2005-08-20_006')
 
 def main(args):
+    # TODO: go through a directory of text files display instead of one file / image at a time
     ld = os.path.expanduser(args.labeldirectory)
     d = os.path.expanduser(args.datadirectory)
     assert os.path.isdir(ld), "{} is not a valid directory".format(ld)

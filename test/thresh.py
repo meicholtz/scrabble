@@ -29,10 +29,10 @@ def adaptive_threshold(x):
     if x == 0:
         preprocess.img = preprocess.org
     elif x == 1:
-        preprocess.img = cv2.adaptiveThreshold(preprocess.img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, \
+        preprocess.img = cv2.adaptiveThreshold(preprocess.org, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, \
                                    cv2.THRESH_BINARY, 11, 2)
     elif x == 2:
-        preprocess.img = cv2.adaptiveThreshold(preprocess.img, 255, cv2.ADAPTIVE_THRESH_MEAN_C, \
+        preprocess.img = cv2.adaptiveThreshold(preprocess.org, 255, cv2.ADAPTIVE_THRESH_MEAN_C, \
                                                cv2.THRESH_BINARY, 11, 2)
 
 
@@ -161,7 +161,6 @@ for ind in range(0, 100):
             print("Tile Number: {}".format(counter))
             counter += 1
     f.close()
-    exit()
 
 
 
