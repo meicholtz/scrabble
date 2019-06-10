@@ -171,3 +171,9 @@ def display_board(squares):
     m = montage(squares[:225], grid_shape=(15, 15))
     cv2.imshow("Montage", m)
     cv2.waitKey(0)
+
+def file_from_str(strr):
+    # which label file the strr is in
+
+    # determine which index the string is in the labels file
+    pass

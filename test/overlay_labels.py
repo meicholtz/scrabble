@@ -20,10 +20,13 @@ def main(args):
     assert os.path.isdir(ld), "{} is not a valid directory".format(ld)
     assert os.path.isdir(d), "{} is not a valid directory".format(d)
     if(args.name is None):
+        ind = 0
         for file in os.listdir(ld):
             if(file == 'labels.txt' or file == 'labels1.txt'):
                 continue
             if file.endswith(".txt"):
+                img, pts = utils.readlabels(os.path.join(utils.home(), 'labels', 'labels.txt'))
+                ipdb.set_trace()
                 name = os.path.splitext(file)[0]
                 img_name = name + ".jpg"
                 label_name = name + ".txt"
