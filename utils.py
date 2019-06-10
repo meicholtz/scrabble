@@ -115,7 +115,7 @@ def imwarp(img, pts, sz=(825, 825)):
     return cv2.warpPerspective(img, M, sz)
 
 
-def readlabels(file, ind):
+def readlabels(file, ind='all'):
     '''Read labeled information (e.g. image filename, clicked corners) from file.
 
         Parameters
@@ -124,9 +124,8 @@ def readlabels(file, ind):
             Path to text file containing labeled Scrabble board information
 
         ind : int or 'all'
-            Index of the file to read. Set ind = 'all' to read all available boards
+            Index of the file to read. Set ind = 'all' to read all available boards. [DEFAULT = 'all']
     '''
-    # TODO: Add "all" option for ind!
     if ind == "all":
         x = np.loadtxt(file, dtype=str)
     else:
@@ -165,3 +164,10 @@ def display_board(squares):
     m = montage(squares[:225], grid_shape=(15, 15))
     cv2.imshow("Montage", m)
     cv2.waitKey(0)
+
+
+def file_from_str(strr):
+    # which label file the strr is in
+
+    # determine which index the string is in the labels file
+    pass
