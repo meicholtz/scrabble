@@ -102,14 +102,14 @@ def imwarp(img, pts, sz=(825, 825)):
             Original image of Scrabble board
 
         pts : np.array
-            4x2 array of points denoting the corners of the board in the image
+            Array of normalized coordinates denoting the corners of the board in the image
 
         sz : int/float OR tuple
             Desired size (in pixels) of output image [DEFAULT = (825, 825)]
     '''
     if type(sz) != tuple:
         sz = (sz, sz)
-    pts1 = np.float32(pts * img.shape[:2][::-1])  # "unnormalize" coordinates
+    pts1 = np.float32(pts.reshape(-1, 2) * img.shape[:2][::-1])
     pts2 = np.float32([[0, 0], [sz[0], 0], [0, sz[1]], [sz[0], sz[1]]])
     M = cv2.getPerspectiveTransform(pts1, pts2)
     return cv2.warpPerspective(img, M, sz)
@@ -127,9 +127,12 @@ def readlabels(file, ind):
             Index of the file to read. Set ind = 'all' to read all available boards
     '''
     # TODO: Add "all" option for ind!
-    x = np.loadtxt(file, dtype=str, skiprows=ind, max_rows=1)
-    imgfile = os.path.join(home(), 'data', x[0])  # full path to raw image
-    pts = np.float32(x[1:]).reshape(-1, 2)  # corners of the board
+    if ind == "all":
+        x = np.loadtxt(file, dtype=str)
+    else:
+        x = np.loadtxt(file, dtype=str, skiprows=ind, max_rows=1)
+    imgfile = os.path.join(home(), 'data', x[:, 0])  # full path to raw image
+    pts = np.float32(x[1:])  # corners of the board
 
     return imgfile, pts
 
