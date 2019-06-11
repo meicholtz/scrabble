@@ -60,14 +60,8 @@ for ind in range(0, 100):
     txtfile = imgname + '.txt'
     txtfile = os.path.join(utils.home(), 'labels', txtfile)
     f = open(txtfile, "a+")
-    file_length = file_len(txtfile)
-    if (file_length > 224):
+    if (not os.stat(txtfile).st_size == 0):
         continue
-    start_row = np.floor(file_len / 15)
-    if(start_row == 0):
-        start_col = file_length
-    else:
-        start_col = file_length - 15
     # get the image of the board
     img = utils.get_board(path, ind)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
