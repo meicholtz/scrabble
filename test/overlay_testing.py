@@ -21,17 +21,16 @@ def overlay_text(img, lf):
             continue
         points = line.split(' ')
         x, y = float(points[1]), float(points[2])
-        x, y = np.float32(x * img.shape[0]), np.float32(y * img.shape[0] + 55)
+        x, y = np.float32(x * img.shape[0]), np.float32(y * img.shape[1])
         cv2.putText(img=img, org=(x,y), text=points[0], fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-        fontScale=1,
-        color=(224, 8, 8))
-    cv2.imshow("yo", img)
+        fontScale=10,
+        color=(0, 0, 255), thickness=7)
+    cv2.namedWindow("img", cv2.WINDOW_NORMAL)
+    cv2.resizeWindow("img", 1000, 1000)
+    cv2.imshow("img", img)
     cv2.waitKey(0)
 
-
-
-f = open("/Users/Alex/Desktop/Summer-2019/scrabble/labels/testing.txt")
+f = open("/Users/Alex/Downloads/testing.txt")
 f.seek(0)
-img = cv2.imread("/Users/Alex/Desktop/Summer-2019/scrabble/data/testing.png")
-img = cv2.resize(img, (825, 825))
+img = cv2.imread("/Users/Alex/Downloads/yes.jpg")
 overlay_text(img, f)
