@@ -58,6 +58,8 @@ def adaptive_threshold(x):
 
 # take in an image, display it to the user with sliders for filtering the image
 def preprocess(image):
+    cv2.namedWindow('original', cv2.WINDOW_NORMAL)
+    cv2.resizeWindow('original', 500, 500)
     # get the width and height
     w, h = image.shape[0], image.shape[1]
     # make image BW
@@ -67,8 +69,9 @@ def preprocess(image):
     cv2.resizeWindow('image', 1000, 1000)
     # create trackbar for threshold and thinning parameters
     cv2.createTrackbar('Adaptive Threshold', 'image', 0, 2, adaptive_threshold)
-    cv2.createTrackbar('Threshold', 'image', 60, 255, nothing)
     cv2.createTrackbar('Thinning', 'image', 0, 5, nothing)
+    cv2.createTrackbar('Minimum Pixels', 'image', 0, 500, nothing)
+    cv2.createTrackbar('Maximum Pixels', 'image', 500, 500, nothing)
     # create a slider that will invert the colors of the image
     cv2.createTrackbar('Invert', 'image', 0, 1, invert_img)
     kernel = np.ones((2, 2), np.uint8)
@@ -77,62 +80,35 @@ def preprocess(image):
         # check the positions of the trackbars and store them
         x = cv2.getTrackbarPos('Threshold', 'image')
         y = cv2.getTrackbarPos('Thinning', 'image')
-        ret, temp = cv2.threshold(preprocess.img, x, 255, cv2.THRESH_BINARY)
-        temp2 = cv2.erode(temp, kernel, iterations=y)
+        min = cv2.getTrackbarPos('Minimum Pixels', 'image')
+        max = cv2.getTrackbarPos('Maximum Pixels', 'image')
+
+        temp2 = cv2.erode(preprocess.img, kernel, iterations=y)
+        nb_components, output, stats, centroids = cv2.connectedComponentsWithStats(temp2, connectivity=8)
+        sizes = stats[1:, -1]
+        nb_components = nb_components - 1
+        # your answer image
+        img2 = np.zeros((output.shape))
+        # testing = np.uint8(output)
+        # for every component in the image, you keep it only if it's above min_size
+        for i in range(0, nb_components):
+            if sizes[i] >= min and sizes[i] <= max:
+                # print(sizes[i])
+                # testing[output != i + 1] = 255
+                # utils.imshow(testing)
+                img2[output == i + 1] = 255
+            # testing = np.uint8(output)
         # display filtered image
-        cv2.imshow('image', temp2)
+        cv2.imshow('image', img2)
+        cv2.imshow('original', preprocess.org)
         # keep the window alive unless escape is pressed
         k = cv2.waitKey(1) & 0xFF
         if k == 27:
             break
         # if the user presses D stop the preprocessing and return the processed image
         if k == ord('d'):
-            if preprocess.invert:
-                image = 255 - image
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-            t = cv2.getTrackbarPos('Adaptive Threshold', 'image')
-            if t == 1:
-                image = cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, \
-                                                      cv2.THRESH_BINARY, 11, 2)
-                temp2 = cv2.erode(image, kernel, iterations=y)
-            elif t == 2:
-                image = cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_MEAN_C, \
-                                                       cv2.THRESH_BINARY, 11, 2)
-                temp2 = cv2.erode(image, kernel, iterations=y)
-            else:
-                ret, temp = cv2.threshold(image, x, 255, cv2.THRESH_BINARY)
-                temp2 = cv2.erode(temp, kernel, iterations=y)
-            if (preprocess.invert):
-                temp2 = 255 - temp2
-            # find all your connected components (white blobs in your image)
-            nb_components, output, stats, centroids = cv2.connectedComponentsWithStats(temp2, connectivity=8)
-            # connectedComponentswithStats yields every seperated component
-            # with information on each of them, such as size
-            # the following part is just taking out the background which is also considered a component,
-            # but most of the time we don't want that.
-            sizes = stats[1:, -1];
-            nb_components = nb_components - 1
-
-            # minimum size of particles we want to keep (number of pixels)
-            # here, it's a fixed value, but you can set it as you want, eg the mean of the sizes or whatever
-            min_size = 90
-            max_size = 400
-
-            # your answer image
-            img2 = np.zeros((output.shape))
-            # testing = np.uint8(output)
-            # for every component in the image, you keep it only if it's above min_size
-            for i in range(0, nb_components):
-                if sizes[i] >= min_size and sizes[i] <= max_size:
-                    # print(sizes[i])
-                    # testing[output != i + 1] = 255
-                    # utils.imshow(testing)
-                    img2[output == i + 1] = 255
-                # testing = np.uint8(output)
-            img2 = 255 - img2
             cv2.destroyAllWindows()
-            return np.uint8(img2)
+            utils.imshow(255 - img2)
 
 def overlay_text(img, labels):
     img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)

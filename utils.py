@@ -89,6 +89,8 @@ def imshow(img, name="Scrabble Board"):
         name : str
             Name of figure [DEFAULT = "Scrabble Board"]
     '''
+    cv2.namedWindow(name, cv2.WINDOW_NORMAL)
+    cv2.resizeWindow(name, 1000, 1000)
     cv2.imshow(name, img)
     cv2.waitKey(0)
 
