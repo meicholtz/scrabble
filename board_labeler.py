@@ -11,6 +11,24 @@ import pytesseract
 MANUAL = True
 
 BLANK_LABEL = 'NONE'
+
+def imshow_components(labels):
+    ipdb.set_trace()
+    # Map component labels to hue val
+    label_hue = np.uint8(179*labels/np.max(labels))
+    blank_ch = 255*np.ones_like(label_hue)
+    labeled_img = cv2.merge([label_hue, blank_ch, blank_ch])
+
+    # cvt to BGR for display
+    labeled_img = cv2.cvtColor(labeled_img, cv2.COLOR_HSV2BGR)
+
+    # set bg label to black
+    labeled_img[label_hue==0] = 0
+    cv2.namedWindow("CCA", cv2.WINDOW_NORMAL)
+    cv2.resizeWindow("CCA", 1000, 1000)
+    cv2.imshow("CCA", labeled_img)
+    cv2.waitKey()
+
 # callback function for Threshold and Thinning sliders
 def nothing(x):
     pass
@@ -60,7 +78,7 @@ def preprocess(image):
         x = cv2.getTrackbarPos('Threshold', 'image')
         y = cv2.getTrackbarPos('Thinning', 'image')
         ret, temp = cv2.threshold(preprocess.img, x, 255, cv2.THRESH_BINARY)
-        temp2 = cv2.dilate(temp, kernel, iterations=y)
+        temp2 = cv2.erode(temp, kernel, iterations=y)
         # display filtered image
         cv2.imshow('image', temp2)
         # keep the window alive unless escape is pressed
@@ -77,29 +95,56 @@ def preprocess(image):
             if t == 1:
                 image = cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, \
                                                       cv2.THRESH_BINARY, 11, 2)
-                temp2 = cv2.dilate(image, kernel, iterations=y)
+                temp2 = cv2.erode(image, kernel, iterations=y)
             elif t == 2:
                 image = cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_MEAN_C, \
                                                        cv2.THRESH_BINARY, 11, 2)
-                temp2 = cv2.dilate(image, kernel, iterations=y)
+                temp2 = cv2.erode(image, kernel, iterations=y)
             else:
                 ret, temp = cv2.threshold(image, x, 255, cv2.THRESH_BINARY)
-                temp2 = cv2.dilate(temp, kernel, iterations=y)
-            # if (preprocess.invert):
-            #     temp2 = 255 - temp2
-            return temp2
+                temp2 = cv2.erode(temp, kernel, iterations=y)
+            if (preprocess.invert):
+                temp2 = 255 - temp2
+            # find all your connected components (white blobs in your image)
+            nb_components, output, stats, centroids = cv2.connectedComponentsWithStats(temp2, connectivity=8)
+            # connectedComponentswithStats yields every seperated component
+            # with information on each of them, such as size
+            # the following part is just taking out the background which is also considered a component,
+            # but most of the time we don't want that.
+            sizes = stats[1:, -1];
+            nb_components = nb_components - 1
 
-def overlay_text(img, lf):
-    for line in lf.readlines():
-        ipdb.set_trace()
+            # minimum size of particles we want to keep (number of pixels)
+            # here, it's a fixed value, but you can set it as you want, eg the mean of the sizes or whatever
+            min_size = 90
+            max_size = 400
+
+            # your answer image
+            img2 = np.zeros((output.shape))
+            # testing = np.uint8(output)
+            # for every component in the image, you keep it only if it's above min_size
+            for i in range(0, nb_components):
+                if sizes[i] >= min_size and sizes[i] <= max_size:
+                    # print(sizes[i])
+                    # testing[output != i + 1] = 255
+                    # utils.imshow(testing)
+                    img2[output == i + 1] = 255
+                # testing = np.uint8(output)
+            img2 = 255 - img2
+            cv2.destroyAllWindows()
+            return np.uint8(img2)
+
+def overlay_text(img, labels):
+    img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
+    for line in labels:
         if(line.split(' ')[0] == 'NONE'):
             continue
         points = line.split(' ')
         x, y = float(points[1]), float(points[2])
         x, y = np.float32(x * img.shape[0]), np.float32(y * img.shape[1])
         cv2.putText(img=img, org=(x,y), text=points[0], fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-        fontScale=0.25,
-        color=(0, 0, 255), thickness=1)
+        fontScale=1,
+        color=(255, 0, 0), thickness=1)
     cv2.namedWindow("text overlay", cv2.WINDOW_NORMAL)
     cv2.resizeWindow("text overlay", 1000, 1000)
     cv2.imshow("text overlay", img)
@@ -153,6 +198,7 @@ for ind in range(0, 100):
     # delete all the rows where tesseract did not find a letter
     data = data[np.where(data[:, 4] != '-1')]
     # for each row, filter the label that tesseract returned
+    labels = []
     for i in range(0, len(data)):
         text = filter_ocr(data[i][5])
         if (text == BLANK_LABEL):
@@ -165,9 +211,10 @@ for ind in range(0, 100):
         center_x, center_y = float(center_x / w), float(center_y / h)
         sq_width, sq_height = float(l_w / w), float(l_h / h)
         label = "{} {} {} {} {} \n".format(text, center_x, center_y, sq_width, sq_height)
+        labels.append(label)
         f.write(label)
-
-    overlay_text(img, f)
+    overlay_text(img, labels)
+    ipdb.set_trace()
     f.close()
 
 
