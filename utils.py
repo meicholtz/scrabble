@@ -89,6 +89,8 @@ def imshow(img, name="Scrabble Board"):
         name : str
             Name of figure [DEFAULT = "Scrabble Board"]
     '''
+    cv2.namedWindow(name, cv2.WINDOW_NORMAL)
+    cv2.resizeWindow(name, 1000, 1000)
     cv2.imshow(name, img)
     cv2.waitKey(0)
 
@@ -128,10 +130,12 @@ def readlabels(file, ind='all'):
     '''
     if ind == "all":
         x = np.loadtxt(file, dtype=str)
+        imgfile = os.path.join(home(), 'data', x[:, 0])  # full path to raw image
     else:
         x = np.loadtxt(file, dtype=str, skiprows=ind, max_rows=1)
-    ipdb.set_trace()
-    imgfile = os.path.join(home(), 'data', x[:, 0])  # full path to raw image
+        # imgfile = os.path.join(home(), 'data', x[:, 0])  # full path to raw image
+        imgfile = os.path.join(home(), 'data', x[0])  # full path to raw image
+
     pts = np.float32(x[1:])  # corners of the board
 
     return imgfile, pts

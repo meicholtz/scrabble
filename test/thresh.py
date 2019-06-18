@@ -7,6 +7,7 @@ import PIL
 import re
 import pytesseract
 
+MANUAL = True
 
 BLANK_LABEL = 'NONE'
 # callback function for Threshold and Thinning sliders
@@ -89,6 +90,12 @@ def preprocess(image):
             #     temp2 = 255 - temp2
             return temp2
 
+def manual_label(square):
+    cv2.imshow("Press key on keyboard once to label", square)
+    if (black_pixel_percentage(square) < 0.05):
+        return BLANK_LABEL
+    c = cv2.waitKey(0)
+    return filter_ocr(chr(c & 255))
 
 def ocr(square):
     if black_pixel_percentage(square) > .25:
@@ -102,7 +109,7 @@ def ocr(square):
     return filter_ocr(label)
 
 def filter_ocr(text):
-    if(text == ''):
+    if(text == '' or text == ' '):
         return BLANK_LABEL
     # grab the first character
     t = text[0]
@@ -155,7 +162,10 @@ for ind in range(0, 100):
             center_x = float(center_x / w)
             center_y = y * swh
             center_y = float(center_y / h)
-            text = ocr(sqs[y][x])
+            if (MANUAL):
+                text = manual_label(sqs[y][x])
+            else:
+                text = ocr(sqs[y][x])
             label = "{} {} {} {} {} \n".format(text, center_x, center_y, sq_width_height, sq_width_height)
             f.write(label)
             print("Tile Number: {}".format(counter))
