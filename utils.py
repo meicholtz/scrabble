@@ -130,6 +130,7 @@ def readlabels(file, ind='all'):
         x = np.loadtxt(file, dtype=str)
     else:
         x = np.loadtxt(file, dtype=str, skiprows=ind, max_rows=1)
+    ipdb.set_trace()
     imgfile = os.path.join(home(), 'data', x[:, 0])  # full path to raw image
     pts = np.float32(x[1:])  # corners of the board
 
