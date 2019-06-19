@@ -8,45 +8,25 @@ import argparse
 parser = argparse.ArgumentParser(description='Input a text file and an image to overlay labels on the image')
 parser.add_argument('-ld', '--labeldirectory', type=str, help='the directory containing the label text file',
                     default=os.path.join(utils.home(), 'labels'))
+parser.add_argument('-c', '--corners', type=str, help='the path to the text file containing the corners for the images.',
+                    default=os.path.join(utils.home(), 'labels', 'labels.txt'))
 parser.add_argument('-d', '--datadirectory', type=str, help='the directory containing the image',
                     default=os.path.join(utils.home(), 'data'))
-parser.add_argument('-n', '--name', type=str, help='the name of an image with no extension ex: Photo_2005-08-20_006 '
-                                                   'leave empty to cycle through a directory')
+parser.add_argument('-n', '--name', type=str, help='the name of a text file containing labels for a photo. '
+                                                   'NOT the full path. Ex. Photo_2005-08-20_006.txt')
 
 def main(args):
     # TODO: go through a directory of text files display instead of one file / image at a time
     ld = os.path.expanduser(args.labeldirectory)
     d = os.path.expanduser(args.datadirectory)
+    filename = args.name
     assert os.path.isdir(ld), "{} is not a valid directory".format(ld)
     assert os.path.isdir(d), "{} is not a valid directory".format(d)
-    if(args.name is None):
-        ind = 0
-        for file in os.listdir(ld):
-            if(file == 'labels.txt' or file == 'labels1.txt'):
-                continue
-            if file.endswith(".txt"):
-                img, pts = utils.readlabels(os.path.join(utils.home(), 'labels', 'labels.txt'))
-                ipdb.set_trace()
-                name = os.path.splitext(file)[0]
-                img_name = name + ".jpg"
-                label_name = name + ".txt"
-                f = open(os.path.join(ld, label_name))
-                f.seek(0)
-                img = cv2.imread(os.path.join(d, img_name))
-                # TODO: GET POINTS FROM LABEL FILE
-                pts = np.array([[0.2547, 0.0854], [0.7984, 0.0583], [0.1500, 0.8979], [0.8781, 0.9042]])
-                img = utils.imwarp(img, pts)
-                overlay_text(img, f)
-    else:
-        name = args.name
-        img_name = name + ".jpg"
-        label_name = name + ".txt"
-        f = open(os.path.join(ld, label_name))
-        f.seek(0)
-        img = cv2.imread(os.path.join(d, img_name))
-        pts = np.array([[0.2547, 0.0854], [0.7984, 0.0583], [0.1500, 0.8979], [0.8781, 0.9042]])
-        img = utils.imwarp(img, pts)
-        overlay_text(img, f)
+    # get the points
+
+    # get the original image file
+    # warp the image file
+    # apply the text overlay
 
 def overlay_text(img, lf):
     for line in lf.readlines():
