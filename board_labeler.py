@@ -91,6 +91,7 @@ def preprocess(image):
         img2 = np.zeros((output.shape))
         # testing = np.uint8(output)
         # for every component in the image, you keep it only if it's above min_size
+        # TODO: This for loop slows down the program significantly
         for i in range(0, nb_components):
             if sizes[i] >= min and sizes[i] <= max:
                 # print(sizes[i])
