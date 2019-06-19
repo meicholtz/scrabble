@@ -6,7 +6,7 @@ import numpy as np
 import cv2
 import os
 from skimage.util import montage
-import ipdb
+# import ipdb
 
 TILES = 15
 
@@ -131,12 +131,13 @@ def readlabels(file, ind='all'):
     if ind == "all":
         x = np.loadtxt(file, dtype=str)
         imgfile = os.path.join(home(), 'data', x[:, 0])  # full path to raw image
+        pts = np.float32(x[:, 1:])
     else:
         x = np.loadtxt(file, dtype=str, skiprows=ind, max_rows=1)
         # imgfile = os.path.join(home(), 'data', x[:, 0])  # full path to raw image
         imgfile = os.path.join(home(), 'data', x[0])  # full path to raw image
 
-    pts = np.float32(x[1:])  # corners of the board
+        pts = np.float32(x[1:])  # corners of the board
 
     return imgfile, pts
 
@@ -162,6 +163,20 @@ def squares_to_board(squares):
     squares = squares.reshape((-1, 55, 55))
     m = montage(squares[:225], grid_shape=(15, 15))
     return m
+
+
+def str2ind(imagefile, labelfile=os.path.join(home(), 'labels', 'labels.txt')):
+    '''Convert filename string to numeric index from label file.'''
+    x = np.loadtxt(labelfile, dtype=str)
+    x = list(x[:, 0])
+
+    try:
+        ind = x.index(imagefile)
+    except:
+        print(imagefile, "not found in label file:", labelfile)
+        ind = -1
+
+    return ind
 
 
 def display_board(squares):
