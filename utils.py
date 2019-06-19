@@ -133,7 +133,9 @@ def readlabels(file, ind='all'):
         imgfile = os.path.join(home(), 'data', x[:, 0])  # full path to raw image
     else:
         x = np.loadtxt(file, dtype=str, skiprows=ind, max_rows=1)
+        # imgfile = os.path.join(home(), 'data', x[:, 0])  # full path to raw image
         imgfile = os.path.join(home(), 'data', x[0])  # full path to raw image
+
     pts = np.float32(x[1:])  # corners of the board
 
     return imgfile, pts
