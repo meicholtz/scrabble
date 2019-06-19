@@ -30,10 +30,6 @@ def main(args):
                    "\nPress ESC to exit.".format(users[user])
     print(instructions)
     counter = 1
-    for ind in range(0, 30):
-        if(ind % 3 != user):
-            continue
-        print(ind)
     for ind in range(0, 10000):
         if(ind % 3 != user):
             continue
