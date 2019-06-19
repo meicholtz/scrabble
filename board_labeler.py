@@ -3,7 +3,7 @@ import utils
 import ipdb
 import os
 import numpy as np
-import PIL
+from PIL import Image, ImageDraw, ImageFont
 import re
 import io
 import pytesseract
@@ -78,11 +78,9 @@ def preprocess(image):
     preprocess.invert = False
     while True:
         # check the positions of the trackbars and store them
-        x = cv2.getTrackbarPos('Threshold', 'image')
         y = cv2.getTrackbarPos('Thinning', 'image')
         min = cv2.getTrackbarPos('Minimum Pixels', 'image')
         max = cv2.getTrackbarPos('Maximum Pixels', 'image')
-
         temp2 = cv2.erode(preprocess.img, kernel, iterations=y)
         nb_components, output, stats, centroids = cv2.connectedComponentsWithStats(temp2, connectivity=8)
         sizes = stats[1:, -1]
@@ -109,10 +107,24 @@ def preprocess(image):
         # if the user presses D stop the preprocessing and return the processed image
         if k == ord('d'):
             cv2.destroyAllWindows()
-            utils.imshow(255 - img2)
+            img2 = 255 - img2
+            return img2
 
 def overlay_text(img, labels):
-    img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
+    image = Image.fromarray(img)
+    draw = ImageDraw.Draw(image)
+    font = ImageFont.truetype('Roboto-Regular.ttf', size=45)
+    color = 'rgb(206, 35, 35)'
+    for line in labels:
+        if (line.split(' ')[0] == 'NONE'):
+            continue
+        points = line.split(' ')
+        x, y = float(points[1]), float(points[2])
+        x, y = np.float32(x * img.shape[0]), np.float32(y * img.shape[1])
+        cv2.putText(img=img, org=(x, y), text=points[0], fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                    fontScale=1,
+                    color=(255, 0, 0), thickness=1)
+    # img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
     for line in labels:
         if(line.split(' ')[0] == 'NONE'):
             continue
@@ -165,7 +177,7 @@ for ind in range(0, 100):
     cv2.destroyAllWindows()
     w, h = img.shape[0], img.shape[1]
     # convert img to be ocr'd
-    img_2 = PIL.Image.fromarray(img)
+    img_2 = Image.fromarray(img)
     # config string for tesseract
     tessdata_dir_config = '--psm 11 -l eng'
     # get ocr label

@@ -54,6 +54,7 @@ path = os.path.join(os.path.join(utils.home(), 'labels'), 'labels.txt')
 instructions = "Press the letter on the keyboard that represents the letter shown. " \
                "\nIf no letter is show, press the spacebar to see the next tile."
 print(instructions)
+counter = 1
 for ind in range(0, 100):
     imgname = utils.readlabels(path, ind)[0]
     imgname = os.path.basename(imgname)
@@ -66,6 +67,9 @@ for ind in range(0, 100):
     # get the image of the board
     img = utils.get_board(path, ind)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    cv2.namedWindow("board", cv2.WINDOW_NORMAL)
+    cv2.resizeWindow("board", 400, 400)
+    cv2.imshow("board", img)
     w, h = img.shape[0], img.shape[1]
     # get the individual tiles from the image
     sqs = utils.squares_from_img(img)
@@ -74,19 +78,26 @@ for ind in range(0, 100):
     swh = sqs.shape[3]
     sq_width_height = float(swh / w)
     # for each tile:
-    counter = 1
     for y in range(0,15):
         for x in range(0,15):
             center_x = x * swh
             center_x = float(center_x / w)
             center_y = y * swh
             center_y = float(center_y / h)
-            text = manual_label(sqs[y][x])
+            title = "Labeling tile: {}, boards completed: {}".format(counter % 225, np.floor(counter / 255))
+            cv2.imshow(title, sqs[y][x])
+            c = cv2.waitKey(0)
+            # if the user hits escape quit the code
+            if c == 27:
+                exit()
+            text = filter_ocr(chr(c & 255))
             label = "{} {} {} {} {} \n".format(text, center_x, center_y, sq_width_height, sq_width_height)
             f.write(label)
             print("Tile Number: {}".format(counter))
             counter += 1
+            cv2.destroyWindow(title)
     f.close()
+    cv2.destroyAllWindows()
 
 
 
