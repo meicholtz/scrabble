@@ -191,3 +191,36 @@ def file_from_str(strr):
 
     # determine which index the string is in the labels file
     pass
+
+
+def show_labels(img, textfile, pts = None):
+    ''' Given inputs of an image and textfile (optional input: points to warp image) show text labels on top of the image.
+
+        Parameters
+        ----------
+        img: numpy array
+            input image. If the image is not warped, pass in pts.
+
+        textfile: str
+            full path to text file containing the labels for the image.
+
+        pts: numpy array
+            an array of 4 points containing the corners of the image
+    '''
+    # if points are given, warp the image
+    if (pts != None):
+        img = imwarp(img, pts)
+    lf = open(textfile)
+    for line in lf.readlines():
+        if(line.split(' ')[0] == 'NONE'):
+            continue
+        points = line.split(' ')
+        x, y = float(points[1]), float(points[2])
+        x, y = np.float32(x * img.shape[0]), np.float32(y * img.shape[0] + 55)
+        cv2.putText(img=img, org=(x,y), text=points[0], fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+        fontScale=1,
+        color=(255, 255, 255))
+    cv2.namedWindow("Text Overlay", cv2.WINDOW_NORMAL)
+    cv2.resizeWindow("Text Overlay", 1000, 1000)
+    cv2.imshow("Text Overlay", img)
+    cv2.waitKey(0)
