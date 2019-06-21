@@ -6,7 +6,7 @@ import numpy as np
 import cv2
 import os
 from skimage.util import montage
-# import ipdb
+import ipdb
 
 TILES = 15
 
@@ -129,8 +129,12 @@ def readlabels(file, ind='all'):
             Index of the file to read. Set ind = 'all' to read all available boards. [DEFAULT = 'all']
     '''
     if ind == "all":
+        imgfile = []
         x = np.loadtxt(file, dtype=str)
-        imgfile = os.path.join(home(), 'data', x[:, 0])  # full path to raw image
+        for img in x[:, 0]:
+            imgfile.append(os.path.join(home(), 'data', img))
+        # imgfile = os.path.join(home(), 'data', x[:, 0])  # full path to raw image
+        imgfile = np.asarray(imgfile)
         pts = np.float32(x[:, 1:])
     else:
         x = np.loadtxt(file, dtype=str, skiprows=ind, max_rows=1)
