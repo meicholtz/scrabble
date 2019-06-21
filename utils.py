@@ -225,7 +225,7 @@ def show_labels(img, textfile, pts = None):
     cv2.imshow("Text Overlay", img)
     cv2.waitKey(0)
 
-def count_letters(directory=os.path.join(home(), 'labels'), skip=['labels.txt', 'labels1.txt'], retboards=False):
+def count_letters(directory=os.path.join(home(), 'labels'), skip=['labels.txt', 'labels1.txt'], count_boards=False):
     ''' Given inputs of an image and textfile (optional input: points to warp image) show text labels on top of the image.
 
         Parameters
@@ -254,6 +254,6 @@ def count_letters(directory=os.path.join(home(), 'labels'), skip=['labels.txt', 
                 letters[ord(letter) - 65] += 1
         else:
             continue
-    if(retboards):
+    if(count_boards):
         return letters, boards
     return letters
