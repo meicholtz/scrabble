@@ -43,10 +43,9 @@ def main(args):
                 label = [float(i) for i in label]
                 temp.append(label)
             labels.append(np.asarray(temp))
-    labels = np.asarray(labels)
-    images = np.asarray(images)
+    labels = np.array(labels, dtype=object)
+    images = np.array(images, dtype=np.uint8)
     np.savez("my_dataset", images=images, boxes=labels)
-    ipdb.set_trace()
 
 
 
