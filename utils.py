@@ -193,7 +193,7 @@ def file_from_str(strr):
     pass
 
 
-def show_labels(img, textfile, pts = None):
+def show_labels(img, textfile, pts=None):
     ''' Given inputs of an image and textfile (optional input: points to warp image) show text labels on top of the image.
 
         Parameters
@@ -217,13 +217,14 @@ def show_labels(img, textfile, pts = None):
         points = line.split(' ')
         x, y = float(points[1]), float(points[2])
         x, y = np.float32(x * img.shape[0]), np.float32(y * img.shape[0] + 55)
-        cv2.putText(img=img, org=(x,y), text=points[0], fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-        fontScale=1,
-        color=(255, 255, 255))
+        cv2.putText(img=img, org=(x, y), text=points[0], fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                    fontScale=1,
+                    color=(255, 255, 255))
     cv2.namedWindow("Text Overlay", cv2.WINDOW_NORMAL)
     cv2.resizeWindow("Text Overlay", 1000, 1000)
     cv2.imshow("Text Overlay", img)
     cv2.waitKey(0)
+
 
 def count_letters(directory=os.path.join(home(), 'labels'), skip=['labels.txt', 'labels1.txt'], count_boards=False):
     ''' Given inputs of an image and textfile (optional input: points to warp image) show text labels on top of the image.
@@ -257,3 +258,18 @@ def count_letters(directory=os.path.join(home(), 'labels'), skip=['labels.txt', 
     if(count_boards):
         return letters, boards
     return letters
+
+
+def validateuser(username):
+    '''Validate user based on string ID.'''
+    username = username.lower()
+    if username in ['alexander', 'alex', 'a', 'af', 'afaus', 'faus']:
+        return 0
+    elif username in ['matthew', 'matt', 'm', 'me', 'meicholtz', 'eicholtz']:
+        return 1
+    elif username in ['samantha', 'sam', 's', 'sl', 'slynch', 'lynch']:
+        return 2
+    elif username in ['guest']:
+        return 3
+    else:
+        raise Exception("User could not be validated. See validateuser in utils.py for details.")
