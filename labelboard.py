@@ -1,0 +1,236 @@
+#!/usr/bin/env python
+
+'''Label a sample Scrabble board from a warped image.
+
+Use keyboard input to move around an image of a Scrabble board and label highlighted letters. Valid key presses include arrow keys, Backspace (same as left arrow), space (same as right arrow), a-z for labeling letters, 0 for clearing all current labels, and Enter for saving the results to file.
+
+    Required inputs
+    ---------------
+    labelfile   : string indicating the full path to a file containing a list
+                  of image files and corresponding corners of a Scrabble board
+
+    index       : integer indicating which line in the labelfile to process
+
+    Optional inputs
+    ---------------
+    -s, -scroll : flag for automatically moving from left-to-right when a label
+                  is applied
+'''
+
+import argparse
+import os
+from PIL import Image as PImage
+from PIL import ImageTk
+from graphics import *
+from utils import *
+import ipdb
+
+parser = argparse.ArgumentParser(description='Label a sample Scrabble board from a warped image.')
+parser.add_argument('labelfile', help='output text file from labeler')
+parser.add_argument('index', help='index of the sample board to show')
+parser.add_argument('-s', '--scroll', help='automatically move to next tile after labeling', action="store_true")
+
+NUM_TILES = 15  # number of tiles on a Scrabble board
+NUM_PIXELS = 36  # number of pixels per tile
+
+
+def main(args):
+    # Parse input arguments
+    labelfile = os.path.expanduser(args.labelfile)
+    ind = int(args.index)
+    scrolling = args.scroll
+
+    # Read data from labelfile
+    imgfile, pts = readlabels(labelfile, ind)
+
+    # Process image
+    img = cv2.imread(imgfile)
+    img = imwarp(img, pts)
+    sz = NUM_TILES * NUM_PIXELS
+    img = cv2.resize(img, (sz, sz))
+
+    # Initialize graphics window
+    win = GraphWin(title=imgfile, width=sz, height=sz)
+    win.setBackground(color_rgb(255, 255, 255))
+    win.master.geometry("+50+50")  # move window to (50, 50) pixels on screen
+
+    # Show current image
+    I = ImageTk.PhotoImage(image=PImage.fromarray(img))
+    win.create_image(0, 0, anchor='nw', image=I)
+    win.update_idletasks()
+    win.update()
+
+    # Add text labels
+    labels = []
+    bg = []  # background for visibility
+    for j in range(NUM_TILES):
+        for i in range(NUM_TILES):
+            anchor = Point((i + 0.2) * NUM_PIXELS, (j + 0.7) * NUM_PIXELS)
+            txt = Text(anchor, '')
+            txt.setSize(8)
+            txt.setStyle('bold')
+            txt.setTextColor(color_rgb(255, 0, 0))
+            labels.append(txt)
+
+            p1 = Point((i + 0.06) * NUM_PIXELS, (j + 0.56) * NUM_PIXELS)
+            p2 = Point((i + 0.3) * NUM_PIXELS, (j + 0.8) * NUM_PIXELS)
+            square = Rectangle(p1, p2)
+            square.setFill(color_rgb(255, 225, 225))
+            square.setOutline(color_rgb(255, 225, 225))
+            bg.append(square)
+
+    # Add rectangle to move around the board
+    x, y = 0, 0
+    margins = [0.5, 2.0]
+    p1 = Point(x * NUM_PIXELS + margins[0], y * NUM_PIXELS + margins[0])
+    p2 = Point((x + 1) * NUM_PIXELS - margins[1], (y + 1) * NUM_PIXELS - margins[1])
+    rect = Rectangle(p1, p2)
+    rect.setWidth(3)
+    rect.setOutline(color_rgb(255, 218, 0))
+    rect.draw(win)
+
+    # Label until the user wants to quit
+    while True:
+        try:
+            key = win.checkKey()
+        except:
+            break
+
+        if key in ['BackSpace', 'space', 'Left', 'Right', 'Up', 'Down']:
+            # Move the tile selector around the board
+            if key in ['BackSpace', 'Left']:
+                if x > 0:
+                    x -= 1
+                    rect.move(-NUM_PIXELS, 0)
+                else:
+                    x = NUM_TILES - 1
+                    if y > 0:
+                        y -= 1
+                        rect.move(NUM_PIXELS * (NUM_TILES - 1), -NUM_PIXELS)
+                    else:
+                        y = NUM_TILES - 1
+                        rect.move(NUM_PIXELS * (NUM_TILES - 1), NUM_PIXELS * (NUM_TILES - 1))
+            elif key in ['space', 'Right']:
+                if x < NUM_TILES - 1:
+                    x += 1
+                    rect.move(NUM_PIXELS, 0)
+                else:
+                    x = 0
+                    if y < NUM_TILES - 1:
+                        y += 1
+                        rect.move(-NUM_PIXELS * (NUM_TILES - 1), NUM_PIXELS)
+                    else:
+                        y = 0
+                        rect.move(-NUM_PIXELS * (NUM_TILES - 1), -NUM_PIXELS * (NUM_TILES - 1))
+            elif key == 'Up':
+                if y > 0:
+                    y -= 1
+                    rect.move(0, -NUM_PIXELS)
+                else:
+                    y = NUM_TILES - 1
+                    if x > 0:
+                        x -= 1
+                        rect.move(-NUM_PIXELS, NUM_PIXELS * (NUM_TILES - 1))
+                    else:
+                        x = NUM_TILES - 1
+                        rect.move(NUM_PIXELS * (NUM_TILES - 1), NUM_PIXELS * (NUM_TILES - 1))
+            elif key == 'Down':
+                if y < NUM_TILES - 1:
+                    y += 1
+                    rect.move(0, NUM_PIXELS)
+                else:
+                    y = 0
+                    if x < NUM_TILES - 1:
+                        x += 1
+                        rect.move(NUM_PIXELS, -NUM_PIXELS * (NUM_TILES - 1))
+                    else:
+                        x = 0
+                        rect.move(-NUM_PIXELS * (NUM_TILES - 1), -NUM_PIXELS * (NUM_TILES - 1))
+
+        elif key == 'Escape':
+            break  # exit loop when 'Esc' is pressed
+
+        elif key != '' and key in 'abcdefghijklmnopqrstuvwxyz':
+            # Assign a letter to the current tile
+            ind = x + y * NUM_TILES
+            labels[ind].setText(key.upper())
+            if not bg[ind].canvas:
+                bg[ind].draw(win)
+            if not labels[ind].canvas:
+                labels[ind].draw(win)
+            win.update()
+
+            # Move to next tile if scrolling
+            if scrolling:
+                if x == NUM_TILES - 1:
+                    px = -NUM_PIXELS * (NUM_TILES - 1)
+                    if y == NUM_TILES - 1:
+                        x, y = 0, 0
+                        rect.move(px, px)
+                    else:
+                        x = 0
+                        y += 1
+                        rect.move(px, NUM_PIXELS)
+                else:
+                    x += 1
+                    rect.move(NUM_PIXELS, 0)
+
+        elif key == 'Delete':
+            # Delete the label of the current tile
+            ind = x + y * NUM_TILES
+            labels[ind].setText('')
+            labels[ind].undraw()
+            bg[ind].undraw()
+            win.update()
+
+            # Move to next tile if scrolling
+            if scrolling:
+                if x == NUM_TILES - 1:
+                    px = -NUM_PIXELS * (NUM_TILES - 1)
+                    if y == NUM_TILES - 1:
+                        x, y = 0, 0
+                        rect.move(px, px)
+                    else:
+                        x = 0
+                        y += 1
+                        rect.move(px, NUM_PIXELS)
+                else:
+                    x += 1
+                    rect.move(NUM_PIXELS, 0)
+
+        elif key == '0':
+            # Clear all current labels
+            for i in range(len(labels)):
+                labels[i].setText('')
+                labels[i].undraw()
+                bg[i].undraw()
+
+        elif key == 'Return':
+            # Save labels to file
+            save(imgfile, labels)
+            break
+
+
+def save(filename, labels):
+    '''Save contents from image to file.'''
+    txtfile = os.path.splitext(os.path.basename(filename))[0] + '.txt'
+    fullfile = os.path.join(home(), 'labels', txtfile)
+
+    f = open(fullfile, 'w')
+    for i in range(len(labels)):
+        row = i // NUM_TILES
+        col = i - row * NUM_TILES
+        letter = labels[i].getText()
+        if letter == '':
+            letter = 'NONE'
+        x = col / NUM_TILES
+        y = row / NUM_TILES
+        w, h = 1 / NUM_TILES, 1 / NUM_TILES
+        print("{0:s} {1:0.4f} {2:0.4f} {3:0.4f} {4:0.4f}".format(letter, x, y, w, h), file=f)
+        f.flush()
+    print("Labels saved to file:", fullfile)
+    f.close()
+
+
+if __name__ == '__main__':
+    main(parser.parse_args())
