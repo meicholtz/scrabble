@@ -23,7 +23,6 @@ from PIL import Image as PImage
 from PIL import ImageTk
 from graphics import *
 from utils import *
-import ipdb
 
 parser = argparse.ArgumentParser(description='Label a sample Scrabble board from a warped image.')
 parser.add_argument('labelfile', help='output text file from labeler')
