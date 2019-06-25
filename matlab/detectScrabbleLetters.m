@@ -4,9 +4,9 @@ clear; clc; close all;
 % Setup processing parameters
 root = fullfile(cd,'data');  % root directory where images are stored
 ind = 10218;  % index of image
-dark = true;  % are the letters dark or light relative to the background?
-scale = 2;  % how much to resize the image
-thold = [2000 20000]; %[min, max] number of pixels in the object
+dark = false;  % are the letters dark or light relative to the background?
+scale = 6;  % how much to resize the image
+thold = [2000 30000]; %[min, max] number of pixels in the object
 
 % Get image files
 d = dir(root);
@@ -14,6 +14,7 @@ filenames = fullfile(root,{d(3:end).name}');
 
 % Show an image
 I = imread(filenames{ind});
+I = imread('C:\Users\meicholtz\Downloads\board1.png');
 figure(1);
 imshow(I);
 title(ind);
@@ -41,12 +42,15 @@ imshow(bw);
 
 % Region properties to filter out objects that are missing critical
 % properties of letters
+bw = ~imerode(~bw,strel('disk',10)); % dilate the letters for ROI
+figure;
+imshow(bw);
 cc = bwconncomp(~bw);
 stats = regionprops(cc,'BoundingBox','EquivDiameter');
 bbox = reshape([stats(:).BoundingBox],4,[])';
 ed = [stats(:).EquivDiameter];
 % bad = find(prod(bbox(:,3:4),2)<7500);
-bad = find(bbox(:,4)<80);
+bad = find(bbox(:,4)<120 | bbox(:,4)>300);
 for ii=bad(:)'
     bw(cc.PixelIdxList{ii}) = 1;
 end
