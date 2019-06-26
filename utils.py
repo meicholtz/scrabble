@@ -189,6 +189,12 @@ def str2ind(imagefile, labelfile=os.path.join(home(), 'labels', 'labels.txt')):
     return ind
 
 
+def txt2jpg(txt):
+    '''Convert input text filename to jpg filename for acquiring an image.'''
+    jpg = os.path.splitext(os.path.basename(txt))[0] + '.jpg'
+    return os.path.join(home(), 'data', jpg)
+
+
 def display_board(squares):
     squares = squares.reshape((-1, 55, 55))
     m = montage(squares[:225], grid_shape=(15, 15))
