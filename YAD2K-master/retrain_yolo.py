@@ -4,7 +4,7 @@ This is a script that can be used to retrain the YOLOv2 model for your own datas
 import argparse
 
 import os
-
+import ipdb
 import matplotlib.pyplot as plt
 import numpy as np
 import PIL
@@ -26,7 +26,7 @@ argparser.add_argument(
     '-d',
     '--data_path',
     help="path to numpy data file (.npz) containing np.object array 'boxes' and np.uint8 array 'images'",
-    default=os.path.join('..', 'my_dataset.npz'))
+    default=os.path.join('..', 'scrabble_dataset.npz'))
 
 argparser.add_argument(
     '-a',
@@ -53,7 +53,7 @@ def _main(args):
     class_names = get_classes(classes_path)
     anchors = get_anchors(anchors_path)
 
-    data = np.load(data_path) # custom data saved as a numpy file.
+    data = np.load(data_path, allow_pickle=True) # custom data saved as a numpy file.
     #  has 2 arrays: an object array 'boxes' (variable length of boxes in each image)
     #  and an array of images 'images'
 
@@ -116,6 +116,7 @@ def process_data(images, boxes=None):
     if boxes is not None:
         # Box preprocessing.
         # Original boxes stored as 1D list of class, x_min, y_min, x_max, y_max.
+        i = 0
         boxes = [box.reshape((-1, 5)) for box in boxes]
         # Get extents as y_min, x_min, y_max, x_max, class for comparision with
         # model output.

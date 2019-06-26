@@ -45,7 +45,7 @@ def main(args):
             labels.append(np.asarray(temp))
     labels = np.array(labels, dtype=object)
     images = np.array(images, dtype=np.uint8)
-    np.savez("my_dataset", images=images, boxes=labels)
+    np.savez("scrabble_dataset", images=images, boxes=labels)
 
 
 
