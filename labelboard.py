@@ -4,6 +4,8 @@
 
 Use keyboard input to move around an image of a Scrabble board and label highlighted letters. Valid key presses include arrow keys, Backspace (same as left arrow), space (same as right arrow), a-z for labeling letters, 0 for clearing all current labels, and Enter for saving the results to file.
 
+You can also highlight a tile by clicking on it with the cursor.
+
     Required inputs
     ---------------
     labelfile   : string indicating the full path to a file containing a list
@@ -32,6 +34,7 @@ parser.add_argument('-s', '--scroll', help='automatically move to next tile afte
 
 NUM_TILES = 15  # number of tiles on a Scrabble board
 NUM_PIXELS = 36  # number of pixels per tile
+BLANK_LABEL = '~'  # string for tiles that do not contain a letter
 
 
 def main(args):
@@ -235,7 +238,7 @@ def save(filename, labels):
         col = i - row * NUM_TILES
         letter = labels[i].getText()
         if letter == '':
-            letter = '~'
+            letter = BLANK_LABEL
 
         xmin = col / NUM_TILES
         ymin = row / NUM_TILES
