@@ -23,6 +23,7 @@ from PIL import Image as PImage
 from PIL import ImageTk
 from graphics import *
 from utils import *
+from colorama import Fore, Style
 
 parser = argparse.ArgumentParser(description='Label a sample Scrabble board from a warped image.')
 parser.add_argument('labelfile', help='output text file from labeler')
@@ -41,6 +42,11 @@ def main(args):
 
     # Read data from labelfile
     imgfile, pts = readlabels(labelfile, ind)
+    txtfile = jpg2txt(imgfile)  # for saving labels
+
+    # Check to see if this image has already been labeled
+    if os.path.exists(txtfile):
+        print('{}WARNING: File already exists! Proceed with caution.\n{}{}'.format(Fore.YELLOW, txtfile, Style.RESET_ALL))
 
     # Process image
     img = cv2.imread(imgfile)
@@ -91,9 +97,20 @@ def main(args):
     # Label until the user wants to quit
     while True:
         try:
+            pt = win.checkMouse()
+        except:
+            break
+        try:
             key = win.checkKey()
         except:
             break
+
+        if pt:
+            # Move the tile selector to where the user clicked
+            col = int(pt.getX() // NUM_PIXELS)
+            row = int(pt.getY() // NUM_PIXELS)
+            rect.move(NUM_PIXELS * (col - x), NUM_PIXELS * (row - y))
+            x, y = col, row
 
         if key in ['BackSpace', 'space', 'Left', 'Right', 'Up', 'Down']:
             # Move the tile selector around the board
@@ -206,25 +223,19 @@ def main(args):
 
         elif key == 'Return':
             # Save labels to file
-            save(imgfile, labels)
+            save(txtfile, labels)
             break
 
 
 def save(filename, labels):
     '''Save contents from image to file.'''
-    txtfile = os.path.splitext(os.path.basename(filename))[0] + '.txt'
-    fullfile = os.path.join(home(), 'labels', txtfile)
-
-    f = open(fullfile, 'w')
+    f = open(filename, 'w')
     for i in range(len(labels)):
         row = i // NUM_TILES
         col = i - row * NUM_TILES
         letter = labels[i].getText()
         if letter == '':
             letter = '~'
-        # x = col / NUM_TILES
-        # y = row / NUM_TILES
-        # w, h = 1 / NUM_TILES, 1 / NUM_TILES
 
         xmin = col / NUM_TILES
         ymin = row / NUM_TILES
@@ -232,7 +243,7 @@ def save(filename, labels):
         ymax = (row + 1) / NUM_TILES
         print("{:s} {:0.4f} {:0.4f} {:0.4f} {:0.4f}".format(letter, xmin, ymin, xmax, ymax), file=f)
         f.flush()
-    print("Labels saved to file:", fullfile)
+    print("Labels saved to file:", filename)
     f.close()
 
 
