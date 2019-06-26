@@ -323,14 +323,15 @@ def count_letters(directory=os.path.join(home(), 'labels'), skip=['labels.txt', 
 
 def validateuser(username):
     '''Validate user based on string ID.'''
+    num_users = 4
     username = username.lower()
     if username in ['alexander', 'alex', 'a', 'af', 'afaus', 'faus']:
-        return 0
+        return 0, num_users
     elif username in ['matthew', 'matt', 'm', 'me', 'meicholtz', 'eicholtz']:
-        return 1
+        return 1, num_users
     elif username in ['samantha', 'sam', 's', 'sl', 'slynch', 'lynch']:
-        return 2
+        return 2, num_users
     elif username in ['guest']:
-        return 3
+        return 3, num_users
     else:
         raise Exception("User could not be validated. See validateuser in utils.py for details.")
