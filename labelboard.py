@@ -221,11 +221,16 @@ def save(filename, labels):
         col = i - row * NUM_TILES
         letter = labels[i].getText()
         if letter == '':
-            letter = 'NONE'
-        x = col / NUM_TILES
-        y = row / NUM_TILES
-        w, h = 1 / NUM_TILES, 1 / NUM_TILES
-        print("{0:s} {1:0.4f} {2:0.4f} {3:0.4f} {4:0.4f}".format(letter, x, y, w, h), file=f)
+            letter = '~'
+        # x = col / NUM_TILES
+        # y = row / NUM_TILES
+        # w, h = 1 / NUM_TILES, 1 / NUM_TILES
+
+        xmin = col * NUM_PIXELS
+        ymin = row * NUM_PIXELS
+        xmax = xmin + NUM_PIXELS
+        ymax = ymin + NUM_PIXELS
+        print("{0:s} {1:0.4f} {2:0.4f} {3:0.4f} {4:0.4f}".format(letter, xmin, ymin, xmax, ymax), file=f)
         f.flush()
     print("Labels saved to file:", fullfile)
     f.close()
