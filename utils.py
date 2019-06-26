@@ -159,6 +159,15 @@ def jpg2txt(jpg):
     return os.path.join(home(), 'labels', txt)
 
 
+def linecount(filename):
+    '''Count the number of lines in a text file.'''
+    with open(filename, 'r') as f:
+        i = -1
+        for i, l in enumerate(f):
+            pass
+        return i + 1
+
+
 def readlabels(file, ind='all'):
     '''Read labeled information (e.g. image filename, clicked corners) from file.
 
