@@ -32,7 +32,7 @@ argparser.add_argument(
     '-a',
     '--anchors_path',
     help='path to anchors file, defaults to yolo_anchors.txt',
-    default=os.path.join('model_data', 'yolo_anchors.txt'))
+    default=os.path.join('model_data', 'scrabble_anchors.txt'))
 
 argparser.add_argument(
     '-c',
