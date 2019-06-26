@@ -6,7 +6,11 @@ import numpy as np
 import cv2
 import os
 from skimage.util import montage
+from graphics import *
+from PIL import Image as PImage
+from PIL import ImageTk
 import ipdb
+import time
 
 TILES = 15
 
@@ -81,6 +85,8 @@ def home():
 def imshow(img, name="Scrabble Board"):
     '''Display image of Scrabble board and wait for user to press a key.
 
+    ***OpenCV version***
+
         Parameters
         ----------
         img : np.array
@@ -93,6 +99,36 @@ def imshow(img, name="Scrabble Board"):
     cv2.resizeWindow(name, 1000, 1000)
     cv2.imshow(name, img)
     cv2.waitKey(0)
+
+
+# def imshow(img, title="Scrabble Board", size=540):
+#     '''Display image of Scrabble board and wait for user to press a key.
+
+#     ***Zelle graphics version***
+
+#         Parameters
+#         ----------
+#         img : np.array
+#             Image to display
+
+#         title : str
+#             Name of figure [DEFAULT = "Scrabble Board"]
+
+#         size : int
+#             Size of image, in pixels [DEFAULT = 540]
+#     '''
+#     # Initialize graphics window
+#     win = GraphWin(title=title, width=size, height=size)
+#     win.setBackground(color_rgb(255, 255, 255))
+#     win.master.geometry("+50+50")  # move window to (50, 50) pixels on screen
+
+#     # Show current image
+#     I = ImageTk.PhotoImage(image=PImage.fromarray(img))
+#     win.create_image(0, 0, anchor='nw', image=I)
+#     win.update_idletasks()
+#     win.update()
+
+#     return win
 
 
 def imwarp(img, pts, sz=(825, 825)):
