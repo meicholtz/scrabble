@@ -226,11 +226,11 @@ def save(filename, labels):
         # y = row / NUM_TILES
         # w, h = 1 / NUM_TILES, 1 / NUM_TILES
 
-        xmin = col * NUM_PIXELS
-        ymin = row * NUM_PIXELS
-        xmax = xmin + NUM_PIXELS
-        ymax = ymin + NUM_PIXELS
-        print("{0:s} {1:0.4f} {2:0.4f} {3:0.4f} {4:0.4f}".format(letter, xmin, ymin, xmax, ymax), file=f)
+        xmin = col / NUM_TILES
+        ymin = row / NUM_TILES
+        xmax = (col + 1) / NUM_TILES
+        ymax = (row + 1) / NUM_TILES
+        print("{:s} {:0.4f} {:0.4f} {:0.4f} {:0.4f}".format(letter, xmin, ymin, xmax, ymax), file=f)
         f.flush()
     print("Labels saved to file:", fullfile)
     f.close()
