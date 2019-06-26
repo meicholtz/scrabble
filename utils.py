@@ -117,6 +117,12 @@ def imwarp(img, pts, sz=(825, 825)):
     return cv2.warpPerspective(img, M, sz)
 
 
+def jpg2txt(jpg):
+    '''Convert input image filename to text filename for saving labels.'''
+    txt = os.path.splitext(os.path.basename(jpg))[0] + '.txt'
+    return os.path.join(home(), 'labels', txt)
+
+
 def readlabels(file, ind='all'):
     '''Read labeled information (e.g. image filename, clicked corners) from file.
 
@@ -181,6 +187,12 @@ def str2ind(imagefile, labelfile=os.path.join(home(), 'labels', 'labels.txt')):
         ind = -1
 
     return ind
+
+
+def txt2jpg(txt):
+    '''Convert input text filename to jpg filename for acquiring an image.'''
+    jpg = os.path.splitext(os.path.basename(txt))[0] + '.jpg'
+    return os.path.join(home(), 'data', jpg)
 
 
 def display_board(squares):
