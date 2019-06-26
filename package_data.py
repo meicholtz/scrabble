@@ -35,7 +35,7 @@ def main(args):
             f = open(os.path.join(ld, textfile))
             temp = []
             for line in f.readlines():
-                if (line.split(' ')[0] == 'NONE'):
+                if (line.split(' ')[0] == '~'):
                     continue
                 label = line.split(' ')
                 label[0] = ord(label[0]) - 65

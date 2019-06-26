@@ -59,8 +59,6 @@ def _main(args):
 
     image_data, boxes = process_data(data['images'], data['boxes'])
 
-    anchors = YOLO_ANCHORS
-
     detectors_mask, matching_true_boxes = get_detector_mask(boxes, anchors)
 
     model_body, model = create_model(anchors, class_names)
