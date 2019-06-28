@@ -311,7 +311,7 @@ def count_letters(directory=os.path.join(home(), 'labels'), skip=['labels.txt', 
             f = open(os.path.join(directory, filename))
             for line in f.readlines():
                 letter = line.split(' ')[0]
-                if (letter == 'NONE' or ord(letter) < 65):
+                if (letter == 'NONE' or ord(letter) < 65 or letter== '~'):
                     continue
                 letters[ord(letter) - 65] += 1
         else:
