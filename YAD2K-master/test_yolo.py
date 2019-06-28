@@ -23,7 +23,7 @@ parser.add_argument(
     '-a',
     '--anchors_path',
     help='path to anchors file, defaults to yolo_anchors.txt',
-    default='model_data/scrabble_anchors.txt')
+    default='trained_stage_3_best_anchors.txt')
 parser.add_argument(
     '-c',
     '--classes_path',
