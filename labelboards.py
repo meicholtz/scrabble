@@ -2,7 +2,9 @@
 
 '''Label sample Scrabble boards from warped images (batch version).
 
-Use keyboard input to move around an image of a Scrabble board and label highlighted letters. Valid key presses include arrow keys, Backspace (same as left arrow), space (same as right arrow), a-z for labeling letters, 0 for clearing all current labels, and Enter for saving the results to file.
+Use keyboard input to move around an image of a Scrabble board and label highlighted letters.
+Valid key presses include arrow keys, Backspace (same as left arrow), space (same as right arrow),
+a-z for labeling letters, 0 for clearing all current labels, and Enter for saving the results to file.
 
 You can also highlight a tile by clicking on it with the cursor.
 
