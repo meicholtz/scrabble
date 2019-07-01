@@ -38,12 +38,18 @@ argparser.add_argument(
     '-c',
     '--classes_path',
     help='path to classes file, defaults to pascal_classes.txt',
-    default=os.path.join('..', 'scrabble_classes.txt'))
+    default=os.path.join('model_data', 'scrabble_classes.txt'))
 
 # Default anchor boxes
 YOLO_ANCHORS = np.array(
     ((0.57273, 0.677385), (1.87446, 2.06253), (3.33843, 5.47434),
      (7.88282, 3.52778), (9.77052, 9.16828)))
+
+STAGE_ONE_EPOCHS = 1
+
+STAGE_TWO_EPOCHS = 1
+
+STAGE_THREE_EPOCHS = 1
 
 def _main(args):
     data_path = os.path.expanduser(args.data_path)
@@ -53,6 +59,9 @@ def _main(args):
     class_names = get_classes(classes_path)
     anchors = get_anchors(anchors_path)
 
+    # TODO: REMOVE
+    anchors = YOLO_ANCHORS
+    # TODO: there is a function that will raise an exception if there are not 5 anchors
     data = np.load(data_path, allow_pickle=True) # custom data saved as a numpy file.
     #  has 2 arrays: an object array 'boxes' (variable length of boxes in each image)
     #  and an array of images 'images'
@@ -251,7 +260,7 @@ def train(model, class_names, anchors, image_data, boxes, detectors_mask, matchi
               np.zeros(len(image_data)),
               validation_split=validation_split,
               batch_size=32,
-              epochs=5,
+              epochs=1,
               callbacks=[logging])
     model.save_weights('trained_stage_1.h5')
 
@@ -269,7 +278,7 @@ def train(model, class_names, anchors, image_data, boxes, detectors_mask, matchi
               np.zeros(len(image_data)),
               validation_split=0.1,
               batch_size=8,
-              epochs=30,
+              epochs=1,
               callbacks=[logging])
 
     model.save_weights('trained_stage_2.h5')
@@ -278,7 +287,7 @@ def train(model, class_names, anchors, image_data, boxes, detectors_mask, matchi
               np.zeros(len(image_data)),
               validation_split=0.1,
               batch_size=8,
-              epochs=30,
+              epochs=1,
               callbacks=[logging, checkpoint, early_stopping])
 
     model.save_weights('trained_stage_3.h5')
