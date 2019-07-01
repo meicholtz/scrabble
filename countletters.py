@@ -16,18 +16,23 @@ def main():
     # Compute count of each letter
     letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     cnt = {key: 0 for key in letters}
+    files = 0
     for file in os.listdir(root):
         if file.endswith(".txt") and file not in labelfiles:
-            f = open(os.path.join(root, file))
-            for line in f.readlines():
-                letter = line.split(' ')[0]
-                if letter != BLANK_LABEL and letter in letters:
-                    cnt[letter] += 1
+            files += 1
+            with open(os.path.join(root, file)) as f:
+                for line in f.readlines():
+                    letter = line.split()[0]
+                    if letter != BLANK_LABEL and letter in letters:
+                        cnt[letter] += 1
 
     # Print output
     for key in cnt:
         print("{} {}".format(key, cnt[key]))
-
+    print("=====================")
+    total = sum(cnt.values())
+    print(total, "total letters")
+    print(total // files, "letters per board")
 
 if __name__ == '__main__':
     main()
