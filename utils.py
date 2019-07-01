@@ -13,6 +13,7 @@ import ipdb
 import time
 
 TILES = 15
+BLANK_LABEL = '~'  # string for tiles that do not contain a letter
 
 
 def get_board(file, ind):
@@ -287,12 +288,12 @@ def show_labels(img, textfile, pts=None):
     cv2.waitKey(0)
 
 
-def count_letters(directory=os.path.join(home(), 'labels'), skip=['labels.txt', 'labels1.txt'], count_boards=False):
+def count_letters(root=os.path.join(home(), 'labels'), skip=['labels.txt', 'labels1.txt'], count_boards=False):
     ''' Given inputs of an image and textfile (optional input: points to warp image) show text labels on top of the image.
 
         Parameters
         ----------
-        directory: str
+        root: str
             directory containing label text files
 
         skip: list
@@ -303,20 +304,20 @@ def count_letters(directory=os.path.join(home(), 'labels'), skip=['labels.txt', 
 
         :return a numpy array containing counts for each letter
     '''
+    letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     boards = 0
     letters = np.zeros(26)
-    for filename in os.listdir(directory):
-        if filename.endswith(".txt") and filename not in skip:
+    for file in os.listdir(root):
+        if file.endswith(".txt") and file not in skip:
             boards += 1
-            f = open(os.path.join(directory, filename))
-            for line in f.readlines():
-                letter = line.split(' ')[0]
-                if (letter == 'NONE' or ord(letter) < 65 or letter== '~'):
-                    continue
-                letters[ord(letter) - 65] += 1
+            with open(os.path.join(root, file)) as f:
+                for line in f.readlines():
+                    letter = line.split()[0]
+                    if letter != BLANK_LABEL and letter in letters:
+                        letters[ord(letter) - 65] += 1
         else:
             continue
-    if(count_boards):
+    if count_boards:
         return letters, boards
     return letters
 

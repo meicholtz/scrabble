@@ -11,14 +11,14 @@ BLANK_LABEL = '~'  # string for tiles that do not contain a letter
 
 def main():
     root = os.path.join(home(), 'labels')  # directory containing labels
-    labelfiles = ['labels.txt', 'labels1.txt']  # do not include in statistics
+    skip = ['labels.txt', 'labels1.txt']  # do not include in statistics
 
     # Compute count of each letter
     letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     cnt = {key: 0 for key in letters}
     boards = 0
     for file in os.listdir(root):
-        if file.endswith(".txt") and file not in labelfiles:
+        if file.endswith(".txt") and file not in skip:
             boards += 1
             with open(os.path.join(root, file)) as f:
                 for line in f.readlines():
