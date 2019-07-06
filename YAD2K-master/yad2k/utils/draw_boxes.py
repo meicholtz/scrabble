@@ -42,6 +42,8 @@ def draw_boxes(image, boxes, box_classes, class_names, scores=None):
     Returns:
         A copy of `image` modified with given bounding boxes.
     """
+    if image.shape[-1] == 1:
+        image = image[:, :, [0, 0, 0]]
     image = Image.fromarray(np.floor(image * 255 + 0.5).astype('uint8'))
 
     font = ImageFont.truetype(

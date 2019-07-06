@@ -3,8 +3,8 @@
 import argparse
 import os
 
-from models.keras_yolo import create_model, train
-import utils
+from yad2k.models.keras_yolo import create_model, train
+import yad2k.utils as utils
 
 parser = argparse.ArgumentParser(description="Train a 2D YOLO network (v2) using custom data.")
 parser.add_argument(

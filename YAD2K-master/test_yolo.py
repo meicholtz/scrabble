@@ -23,12 +23,12 @@ parser.add_argument(
     '-a',
     '--anchors_path',
     help='path to anchors file, defaults to yolo_anchors.txt',
-    default='model_data/yolo_anchors.txt')
+    default='trained_stage_3_best_anchors.txt')
 parser.add_argument(
     '-c',
     '--classes_path',
     help='path to classes file, defaults to coco_classes.txt',
-    default='model_data/coco_classes.txt')
+    default='model_data/scrabble_classes.txt')
 parser.add_argument(
     '-t',
     '--test_path',
@@ -76,6 +76,10 @@ def _main(args):
         anchors = [float(x) for x in anchors.split(',')]
         anchors = np.array(anchors).reshape(-1, 2)
 
+    # TODO: REMOVE THIS
+    anchors = np.array(
+    ((0.57273, 0.677385), (1.87446, 2.06253), (3.33843, 5.47434),
+     (7.88282, 3.52778), (9.77052, 9.16828)))
     yolo_model = load_model(model_path)
 
     # Verify model, anchors, and classes are compatible

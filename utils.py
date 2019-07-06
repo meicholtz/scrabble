@@ -6,9 +6,14 @@ import numpy as np
 import cv2
 import os
 from skimage.util import montage
+from graphics import *
+from PIL import Image as PImage
+from PIL import ImageTk
 import ipdb
+import time
 
 TILES = 15
+BLANK_LABEL = '~'  # string for tiles that do not contain a letter
 
 
 def get_board(file, ind):
@@ -81,6 +86,8 @@ def home():
 def imshow(img, name="Scrabble Board"):
     '''Display image of Scrabble board and wait for user to press a key.
 
+    ***OpenCV version***
+
         Parameters
         ----------
         img : np.array
@@ -93,6 +100,36 @@ def imshow(img, name="Scrabble Board"):
     cv2.resizeWindow(name, 1000, 1000)
     cv2.imshow(name, img)
     cv2.waitKey(0)
+
+
+# def imshow(img, title="Scrabble Board", size=540):
+#     '''Display image of Scrabble board and wait for user to press a key.
+
+#     ***Zelle graphics version***
+
+#         Parameters
+#         ----------
+#         img : np.array
+#             Image to display
+
+#         title : str
+#             Name of figure [DEFAULT = "Scrabble Board"]
+
+#         size : int
+#             Size of image, in pixels [DEFAULT = 540]
+#     '''
+#     # Initialize graphics window
+#     win = GraphWin(title=title, width=size, height=size)
+#     win.setBackground(color_rgb(255, 255, 255))
+#     win.master.geometry("+50+50")  # move window to (50, 50) pixels on screen
+
+#     # Show current image
+#     I = ImageTk.PhotoImage(image=PImage.fromarray(img))
+#     win.create_image(0, 0, anchor='nw', image=I)
+#     win.update_idletasks()
+#     win.update()
+
+#     return win
 
 
 def imwarp(img, pts, sz=(825, 825)):
@@ -121,6 +158,15 @@ def jpg2txt(jpg):
     '''Convert input image filename to text filename for saving labels.'''
     txt = os.path.splitext(os.path.basename(jpg))[0] + '.txt'
     return os.path.join(home(), 'labels', txt)
+
+
+def linecount(filename):
+    '''Count the number of lines in a text file.'''
+    with open(filename, 'r') as f:
+        i = -1
+        for i, l in enumerate(f):
+            pass
+        return i + 1
 
 
 def readlabels(file, ind='all'):
@@ -242,12 +288,12 @@ def show_labels(img, textfile, pts=None):
     cv2.waitKey(0)
 
 
-def count_letters(directory=os.path.join(home(), 'labels'), skip=['labels.txt', 'labels1.txt'], count_boards=False):
+def count_letters(root=os.path.join(home(), 'labels'), skip=['labels.txt', 'labels1.txt'], count_boards=False):
     ''' Given inputs of an image and textfile (optional input: points to warp image) show text labels on top of the image.
 
         Parameters
         ----------
-        directory: str
+        root: str
             directory containing label text files
 
         skip: list
@@ -258,34 +304,35 @@ def count_letters(directory=os.path.join(home(), 'labels'), skip=['labels.txt', 
 
         :return a numpy array containing counts for each letter
     '''
+    letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     boards = 0
     letters = np.zeros(26)
-    for filename in os.listdir(directory):
-        if filename.endswith(".txt") and filename not in skip:
+    for file in os.listdir(root):
+        if file.endswith(".txt") and file not in skip:
             boards += 1
-            f = open(os.path.join(directory, filename))
-            for line in f.readlines():
-                letter = line.split(' ')[0]
-                if (letter == 'NONE' or ord(letter) < 65):
-                    continue
-                letters[ord(letter) - 65] += 1
+            with open(os.path.join(root, file)) as f:
+                for line in f.readlines():
+                    letter = line.split()[0]
+                    if letter != BLANK_LABEL and letter in letters:
+                        letters[ord(letter) - 65] += 1
         else:
             continue
-    if(count_boards):
+    if count_boards:
         return letters, boards
     return letters
 
 
 def validateuser(username):
     '''Validate user based on string ID.'''
+    num_users = 4
     username = username.lower()
     if username in ['alexander', 'alex', 'a', 'af', 'afaus', 'faus']:
-        return 0
+        return 0, num_users
     elif username in ['matthew', 'matt', 'm', 'me', 'meicholtz', 'eicholtz']:
-        return 1
+        return 1, num_users
     elif username in ['samantha', 'sam', 's', 'sl', 'slynch', 'lynch']:
-        return 2
+        return 2, num_users
     elif username in ['guest']:
-        return 3
+        return 3, num_users
     else:
         raise Exception("User could not be validated. See validateuser in utils.py for details.")
