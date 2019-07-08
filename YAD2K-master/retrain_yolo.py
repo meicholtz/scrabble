@@ -4,7 +4,7 @@ This is a script that can be used to retrain the YOLOv2 model for your own datas
 import argparse
 
 import os
-import ipdb
+
 import matplotlib.pyplot as plt
 import numpy as np
 import PIL
@@ -26,30 +26,24 @@ argparser.add_argument(
     '-d',
     '--data_path',
     help="path to numpy data file (.npz) containing np.object array 'boxes' and np.uint8 array 'images'",
-    default=os.path.join('model_data', 'scrabble_dataset.npz'))
+    default=os.path.join('..', 'DATA', 'underwater_data.npz'))
 
 argparser.add_argument(
     '-a',
     '--anchors_path',
     help='path to anchors file, defaults to yolo_anchors.txt',
-    default=os.path.join('model_data', 'scrabble_anchors.txt'))
+    default=os.path.join('model_data', 'yolo_anchors.txt'))
 
 argparser.add_argument(
     '-c',
     '--classes_path',
     help='path to classes file, defaults to pascal_classes.txt',
-    default=os.path.join('model_data', 'scrabble_classes.txt'))
+    default=os.path.join('..', 'DATA', 'underwater_classes.txt'))
 
 # Default anchor boxes
 YOLO_ANCHORS = np.array(
     ((0.57273, 0.677385), (1.87446, 2.06253), (3.33843, 5.47434),
      (7.88282, 3.52778), (9.77052, 9.16828)))
-
-STAGE_ONE_EPOCHS = 1
-
-STAGE_TWO_EPOCHS = 1
-
-STAGE_THREE_EPOCHS = 1
 
 def _main(args):
     data_path = os.path.expanduser(args.data_path)
@@ -57,16 +51,15 @@ def _main(args):
     anchors_path = os.path.expanduser(args.anchors_path)
 
     class_names = get_classes(classes_path)
-    ipdb.set_trace()
-    # anchors = get_anchors(anchors_path)
-    # TODO: REMOVE
-    anchors = YOLO_ANCHORS
-    # TODO: there is a function that will raise an exception if there are not 5 anchors
-    data = np.load(data_path, allow_pickle=True) # custom data saved as a numpy file.
+    anchors = get_anchors(anchors_path)
+
+    data = np.load(data_path) # custom data saved as a numpy file.
     #  has 2 arrays: an object array 'boxes' (variable length of boxes in each image)
     #  and an array of images 'images'
 
     image_data, boxes = process_data(data['images'], data['boxes'])
+
+    anchors = YOLO_ANCHORS
 
     detectors_mask, matching_true_boxes = get_detector_mask(boxes, anchors)
 
@@ -123,7 +116,6 @@ def process_data(images, boxes=None):
     if boxes is not None:
         # Box preprocessing.
         # Original boxes stored as 1D list of class, x_min, y_min, x_max, y_max.
-        i = 0
         boxes = [box.reshape((-1, 5)) for box in boxes]
         # Get extents as y_min, x_min, y_max, x_max, class for comparision with
         # model output.
@@ -260,7 +252,7 @@ def train(model, class_names, anchors, image_data, boxes, detectors_mask, matchi
               np.zeros(len(image_data)),
               validation_split=validation_split,
               batch_size=32,
-              epochs=1,
+              epochs=5,
               callbacks=[logging])
     model.save_weights('trained_stage_1.h5')
 
@@ -278,7 +270,7 @@ def train(model, class_names, anchors, image_data, boxes, detectors_mask, matchi
               np.zeros(len(image_data)),
               validation_split=0.1,
               batch_size=8,
-              epochs=1,
+              epochs=30,
               callbacks=[logging])
 
     model.save_weights('trained_stage_2.h5')
@@ -287,7 +279,7 @@ def train(model, class_names, anchors, image_data, boxes, detectors_mask, matchi
               np.zeros(len(image_data)),
               validation_split=0.1,
               batch_size=8,
-              epochs=1,
+              epochs=30,
               callbacks=[logging, checkpoint, early_stopping])
 
     model.save_weights('trained_stage_3.h5')

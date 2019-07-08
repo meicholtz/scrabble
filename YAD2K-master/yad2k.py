@@ -27,9 +27,9 @@ from yad2k.models.keras_yolo import (space_to_depth_x2,
 
 parser = argparse.ArgumentParser(
     description='Yet Another Darknet To Keras Converter.')
-parser.add_argument('config_path', help='Path to Darknet cfg file.', default='yolov2.cfg')
-parser.add_argument('weights_path', help='Path to Darknet weights file.', default='yolo.weights')
-parser.add_argument('output_path', help='Path to output Keras model file.', default='/model_data')
+parser.add_argument('config_path', help='Path to Darknet cfg file.')
+parser.add_argument('weights_path', help='Path to Darknet weights file.')
+parser.add_argument('output_path', help='Path to output Keras model file.')
 parser.add_argument(
     '-p',
     '--plot_model',
