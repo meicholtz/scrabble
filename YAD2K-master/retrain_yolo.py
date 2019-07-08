@@ -53,7 +53,7 @@ def _main(args):
     class_names = get_classes(classes_path)
     anchors = get_anchors(anchors_path)
 
-    data = np.load(data_path) # custom data saved as a numpy file.
+    data = np.load(data_path, allow_pickle=True) # custom data saved as a numpy file.
     #  has 2 arrays: an object array 'boxes' (variable length of boxes in each image)
     #  and an array of images 'images'
 
@@ -270,7 +270,7 @@ def train(model, class_names, anchors, image_data, boxes, detectors_mask, matchi
               np.zeros(len(image_data)),
               validation_split=0.1,
               batch_size=8,
-              epochs=30,
+              epochs=5,
               callbacks=[logging])
 
     model.save_weights('trained_stage_2.h5')
@@ -279,7 +279,7 @@ def train(model, class_names, anchors, image_data, boxes, detectors_mask, matchi
               np.zeros(len(image_data)),
               validation_split=0.1,
               batch_size=8,
-              epochs=30,
+              epochs=5,
               callbacks=[logging, checkpoint, early_stopping])
 
     model.save_weights('trained_stage_3.h5')

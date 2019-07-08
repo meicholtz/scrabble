@@ -42,6 +42,9 @@ parser.add_argument(
     'WARNING: This experimental option does not work properly for YOLO_v2.',
     action='store_true')
 
+YOLO_ANCHORS = np.array(
+    ((0.57273, 0.677385), (1.87446, 2.06253), (3.33843, 5.47434),
+     (7.88282, 3.52778), (9.77052, 9.16828)))
 
 def unique_config_sections(config_file):
     """Convert all config sections to have unique names.

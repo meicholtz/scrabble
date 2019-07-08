@@ -12,6 +12,7 @@ from keras.models import load_model
 from PIL import Image, ImageDraw, ImageFont
 
 from yad2k.models.keras_yolo import yolo_eval, yolo_head
+from retrain_yolo import create_model
 
 parser = argparse.ArgumentParser(
     description='Run a YOLO_v2 style detection model on test images..')
@@ -71,12 +72,19 @@ def _main(args):
         class_names = f.readlines()
     class_names = [c.strip() for c in class_names]
 
-    with open(anchors_path) as f:
-        anchors = f.readline()
-        anchors = [float(x) for x in anchors.split(',')]
-        anchors = np.array(anchors).reshape(-1, 2)
+# TODO: USE THIS INSTEAD
+    # with open(anchors_path) as f:
+    #     anchors = f.readline()
+    #     anchors = [float(x) for x in anchors.split(',')]
+    #     anchors = np.array(anchors).reshape(-1, 2)
 
-    yolo_model = load_model(model_path)
+    # yolo_model = load_model(model_path)
+    # ALEXANDER HACK
+    anchors = np.array(
+    ((0.57273, 0.677385), (1.87446, 2.06253), (3.33843, 5.47434),
+     (7.88282, 3.52778), (9.77052, 9.16828)))
+    yolo_model, model = create_model(anchors, class_names, load_pretrained=False, freeze_body=True)
+    model.load_weights(model_path)
 
     # Verify model, anchors, and classes are compatible
     num_classes = len(class_names)
