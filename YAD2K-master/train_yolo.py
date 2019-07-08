@@ -2,6 +2,7 @@
 """Train a 2D YOLO network (v2) using custom data."""
 import argparse
 import os
+import numpy as np
 
 from yad2k.models.keras_yolo import create_model, train
 import yad2k.utils as utils
@@ -35,7 +36,15 @@ def _main(args):
     # Extract anchors, classes, images, and boxes from input files
     anchors = utils.get_anchors(anchors_path)
     classes = utils.get_classes(classes_path)
-    images, boxes = utils.get_data(data_path)
+    # images, boxes = utils.get_data(data_path)
+    # Alexander is adding this starting here:
+    data = np.load(data_path, allow_pickle=True)
+    images, boxes = data['images'], data['boxes']
+    max_box_shape = max([box.shape for box in boxes])
+    for i, box in enumerate(boxes):
+        boxes[i] = np.zeros(max_box_shape, dtype=boxes[0].dtype)  # array of zeros (for padding)
+        boxes[i][:box.shape[0], :box.shape[1]] = box
+    boxes = np.array(boxes)  # convert to ndarray (as opposed to a list of ndarrays)
 
     # Train YOLO model
     model_body, model = create_model(images.shape[1:-1], int(boxes.shape[-1]), anchors, classes)

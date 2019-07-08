@@ -24,9 +24,11 @@ def main(args):
     dd = args.directory
     ld = os.path.join(home(), 'labels')
     imgs, pts = readlabels(os.path.join(ld, 'labels.txt'), ind='all')
-    for i in range(num_files):
-        if(i % 10 == 0):
-            print("{} of {}".format(i, num_files))
+    i = 0
+    j = 0
+    while(j < num_files - 200):
+        if(j % 10 == 0):
+            print("{} of {}".format(j, num_files))
         textfile = os.path.basename(imgs[i])
         textfile = textfile.split('.')[0]
         textfile = textfile + '.txt'
@@ -49,8 +51,12 @@ def main(args):
             temp = np.asarray(temp)
             if(len(temp.shape) == 2):
                 labels.append(temp)
+                j += 1
             else:
-                print("{}FOUND EMPTY FILE {}: {}".format(Fore.RED, textfile, Style.RESET_ALL))
+                print("{}FOUND EMPTY FILE: {} {}".format(Fore.RED, textfile, Style.RESET_ALL))
+        else:
+            print("{}File does not have label: {} {}".format(Fore.YELLOW, textfile, Style.RESET_ALL))
+        i += 1
     labels = np.array(labels, dtype=object)
     images = np.array(images, dtype=np.uint8)
     np.savez("YAD2K-master/model_data/scrabble_dataset", images=images, boxes=labels)

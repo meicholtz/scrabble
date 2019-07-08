@@ -13,7 +13,7 @@ from keras.models import Model
 from keras.optimizers import Adam, SGD
 
 from .keras_darknet19 import DarknetConv2D, DarknetConv2D_BN_Leaky, darknet_body
-import utils
+import yad2k.utils as utils
 
 
 def create_model(image_size, box_size, anchors, classes):

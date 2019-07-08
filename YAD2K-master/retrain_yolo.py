@@ -26,7 +26,7 @@ argparser.add_argument(
     '-d',
     '--data_path',
     help="path to numpy data file (.npz) containing np.object array 'boxes' and np.uint8 array 'images'",
-    default=os.path.join('..', 'scrabble_dataset.npz'))
+    default=os.path.join('model_data', 'scrabble_dataset.npz'))
 
 argparser.add_argument(
     '-a',
@@ -57,8 +57,8 @@ def _main(args):
     anchors_path = os.path.expanduser(args.anchors_path)
 
     class_names = get_classes(classes_path)
-    anchors = get_anchors(anchors_path)
-
+    ipdb.set_trace()
+    # anchors = get_anchors(anchors_path)
     # TODO: REMOVE
     anchors = YOLO_ANCHORS
     # TODO: there is a function that will raise an exception if there are not 5 anchors

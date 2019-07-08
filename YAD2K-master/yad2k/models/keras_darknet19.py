@@ -8,7 +8,7 @@ from keras.layers.normalization import BatchNormalization
 from keras.models import Model
 from keras.regularizers import l2
 
-import utils
+import yad2k.utils as utils
 
 # Partial wrapper for Convolution2D with static default argument
 _DarknetConv2D = partial(Conv2D, padding='same')

@@ -44,6 +44,7 @@ def get_data(filename):
 
     # Compute position and shape (in pixels) of every box in every image
     if boxes[0].shape[1] == 5:  # 2D case
+        ipdb.set_trace()
         box_position = [0.5 * (box[:, 3:5] + box[:, 1:3]) / image_size for box in boxes]
         box_size = [(box[:, 3:5] - box[:, 1:3]) / image_size for box in boxes]
     else:  # 3D case
