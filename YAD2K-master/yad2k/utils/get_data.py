@@ -40,7 +40,6 @@ def get_data(filename):
 
     # Process bounding boxes
     boxes = data['boxes']
-    ipdb.set_trace()
     assert len(set([box.shape[1] for box in boxes])) == 1, "All boxes must have same dimensions"
 
     # Compute position and shape (in pixels) of every box in every image
