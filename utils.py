@@ -7,10 +7,8 @@ import cv2
 import os
 from skimage.util import montage
 from graphics import *
-from PIL import Image as PImage
-from PIL import ImageTk
-import ipdb
-import time
+from colorama import Fore, Style
+
 
 TILES = 15
 BLANK_LABEL = '~'  # string for tiles that do not contain a letter
@@ -307,7 +305,10 @@ def count_letters(root=os.path.join(home(), 'labels'), skip=['labels.txt', 'labe
     letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     boards = 0
     letters = np.zeros(26)
+
     for file in os.listdir(root):
+        if(os.stat(os.path.join(root, file)).st_size == 0):
+            print("{}FOUND EMPTY FILE: {}{}".format(Fore.RED, file, Style.RESET_ALL))
         if file.endswith(".txt") and file not in skip:
             boards += 1
             with open(os.path.join(root, file)) as f:

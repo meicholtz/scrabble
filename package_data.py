@@ -20,17 +20,17 @@ IMAGE_SIZE = (825, 825)
 def main(args):
     images = []
     labels = []
+    letters, num_files = count_letters(count_boards=True)
     dd = args.directory
     ld = os.path.join(home(), 'labels')
     imgs, pts = readlabels(os.path.join(ld, 'labels.txt'), ind='all')
-    for i in range(len(imgs)):
-        print("{} of {}".format(i, len(imgs)))
+    for i in range(num_files):
+        if(i % 10 == 0):
+            print("{} of {}".format(i, num_files))
         textfile = os.path.basename(imgs[i])
         textfile = textfile.split('.')[0]
         textfile = textfile + '.txt'
         if(os.path.exists(os.path.join(ld, textfile))):
-            if(os.stat(os.path.join(ld, textfile)).st_size == 0):
-                continue
             img = cv2.imread(imgs[i])
             # warp the image
             img = imwarp(img, pts[i], sz=IMAGE_SIZE)
@@ -47,12 +47,10 @@ def main(args):
                 label = [float(i) for i in label]
                 temp.append(label)
             temp = np.asarray(temp)
-            if(i == 77):
-                ipdb.set_trace()
             if(len(temp.shape) == 2):
                 labels.append(temp)
             else:
-                print("FOUND EMPTY FILE {}: ".format(Fore.RED, textfile))
+                print("{}FOUND EMPTY FILE {}: {}".format(Fore.RED, textfile, Style.RESET_ALL))
     labels = np.array(labels, dtype=object)
     images = np.array(images, dtype=np.uint8)
     np.savez("YAD2K-master/model_data/scrabble_dataset", images=images, boxes=labels)
