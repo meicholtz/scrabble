@@ -53,6 +53,8 @@ parser.add_argument(
     type=float,
     help='threshold for non max suppression IOU, default .5',
     default=.5)
+parser.add_argument('-l','--label_file', type=str, help='Label file containing file names and corners of board.',
+                    default=os.path.join(utils.home(), 'labels', 'labels.txt'))
 
 
 def _main(args):
@@ -62,6 +64,7 @@ def _main(args):
     classes_path = os.path.expanduser(args.classes_path)
     test_path = os.path.expanduser(args.test_path)
     output_path = os.path.expanduser(args.output_path)
+    label_file = args.label_file
 
     if not os.path.exists(output_path):
         print('Creating output path {}'.format(output_path))
@@ -122,8 +125,7 @@ def _main(args):
         input_image_shape,
         score_threshold=args.score_threshold,
         iou_threshold=args.iou_threshold)
-    
-    label_file = '/Users/Alex/Desktop/Summer-2019/scrabble/labels/labels.txt'
+
     lf = open(label_file)
     num_tests = 10
     count = 0
@@ -133,7 +135,6 @@ def _main(args):
         line = line.split(' ')
         image_file = os.path.join(utils.home(), 'data', line[0])
         image = Image.open(image_file)
-        image.show()
         image_file = line[0]
         pts = line[1:]
         pts = np.asarray(pts, dtype=np.float)
