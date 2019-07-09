@@ -41,6 +41,9 @@ argparser.add_argument(
     default=os.path.join('model_data', 'scrabble_classes.txt'))
 
 
+STAGE_ONE_EPOCHS = 1
+STAGE_TWO_EPOCHS = 5
+STAGE_THREE_EPOCHS = 5
 
 def _main(args):
     data_path = os.path.expanduser(args.data_path)
@@ -247,7 +250,7 @@ def train(model, class_names, anchors, image_data, boxes, detectors_mask, matchi
               np.zeros(len(image_data)),
               validation_split=validation_split,
               batch_size=32,
-              epochs=5,
+              epochs=STAGE_ONE_EPOCHS,
               callbacks=[logging])
     model.save_weights('trained_stage_1.h5')
 
@@ -265,7 +268,7 @@ def train(model, class_names, anchors, image_data, boxes, detectors_mask, matchi
               np.zeros(len(image_data)),
               validation_split=0.1,
               batch_size=8,
-              epochs=5,
+              epochs=STAGE_TWO_EPOCHS,
               callbacks=[logging])
 
     model.save_weights('trained_stage_2.h5')
@@ -274,7 +277,7 @@ def train(model, class_names, anchors, image_data, boxes, detectors_mask, matchi
               np.zeros(len(image_data)),
               validation_split=0.1,
               batch_size=8,
-              epochs=5,
+              epochs=STAGE_THREE_EPOCHS,
               callbacks=[logging, checkpoint, early_stopping])
 
     model.save_weights('trained_stage_3.h5')
