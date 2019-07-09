@@ -62,13 +62,11 @@ def main(args):
     np.savez("YAD2K-master/model_data/scrabble_dataset", images=images, boxes=labels)
     data = np.load("YAD2K-master/model_data/scrabble_dataset.npz", allow_pickle=True)
     boxes = data['boxes']
-    ipdb.set_trace()
     i =0
     for box in boxes:
         print(i, box.shape)
         if(len(box.shape) != 2):
             print("ERROR".format(Fore.RED, Style.RESET_ALL))
-    ipdb.set_trace()
 
 if __name__ == '__main__':
     main(parser.parse_args())
