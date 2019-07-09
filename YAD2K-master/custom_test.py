@@ -11,7 +11,7 @@ import numpy as np
 from keras import backend as K
 from keras.models import load_model
 from PIL import Image, ImageDraw, ImageFont
-
+import utils
 from yad2k.models.keras_yolo import yolo_eval, yolo_head
 from retrain_yolo import create_model
 
@@ -122,34 +122,26 @@ def _main(args):
         input_image_shape,
         score_threshold=args.score_threshold,
         iou_threshold=args.iou_threshold)
-
-    for image_file in os.listdir(test_path):
-        try:
-            image_type = imghdr.what(os.path.join(test_path, image_file))
-            if not image_type:
-                continue
-        except IsADirectoryError:
-            continue
-
-        image = Image.open(os.path.join(test_path, image_file))
-        if is_fixed_size:  # TODO: When resizing we can use minibatch input.
-            resized_image = image.resize(
-                tuple(reversed(model_image_size)), Image.BICUBIC)
-            image_data = np.array(resized_image, dtype='float32')
-        else:
-            # Due to skip connection + max pooling in YOLO_v2, inputs must have
-            # width and height as multiples of 32.
-            new_image_size = (image.width - (image.width % 32),
-                              image.height - (image.height % 32))
-            resized_image = image.resize(new_image_size, Image.BICUBIC)
-            image_data = np.array(resized_image, dtype='float32')
-            print(image_data.shape)
-
-        image_data /= 255.
-        image_data = np.expand_dims(image_data, 0)  # Add batch dimension.
-        # # sometimes there's a 4th dimension? it can be deleted safely
-        # if(image_data.shape[3] == 4):
-        #     image_data = np.delete(image_data, -1, 3)
+    
+    label_file = '/Users/Alex/Desktop/Summer-2019/scrabble/labels/labels.txt'
+    lf = open(label_file)
+    num_tests = 10
+    count = 0
+    while(count < num_tests):
+        count += 1
+        line = lf.readline()
+        line = line.split(' ')
+        image_file = os.path.join(utils.home(), 'data', line[0])
+        image = Image.open(image_file)
+        image.show()
+        image_file = line[0]
+        pts = line[1:]
+        pts = np.asarray(pts, dtype=np.float)
+        image = np.array(image)
+        image = utils.imwarp(image, pts, sz=(416,416))
+        image_data = image
+        image_data = np.expand_dims(image_data, 0)
+        image = Image.fromarray(image)
         out_boxes, out_scores, out_classes = sess.run(
             [boxes, scores, classes],
             feed_dict={
@@ -199,7 +191,6 @@ def _main(args):
 
         image.save(os.path.join(output_path, image_file), quality=90)
     sess.close()
-
 
 if __name__ == '__main__':
     _main(parser.parse_args())
