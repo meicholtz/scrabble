@@ -25,12 +25,12 @@ parser.add_argument(
     '-a',
     '--anchors_path',
     help='path to anchors file, defaults to yolo_anchors.txt',
-    default='model_data/yolo_anchors.txt')
+    default='model_data/scrabble_anchors.txt')
 parser.add_argument(
     '-c',
     '--classes_path',
     help='path to classes file, defaults to coco_classes.txt',
-    default='model_data/coco_classes.txt')
+    default='model_data/scrabble_classes.txt')
 parser.add_argument(
     '-t',
     '--test_path',
@@ -53,8 +53,12 @@ parser.add_argument(
     type=float,
     help='threshold for non max suppression IOU, default .5',
     default=.5)
-parser.add_argument('-l','--label_file', type=str, help='Label file containing file names and corners of board.',
-                    default=os.path.join(utils.home(), 'labels', 'labels.txt'))
+parser.add_argument(
+    '-l',
+    '--label_file',
+    type=str,
+    help='Label file containing file names and corners of board.',
+    default=os.path.join(utils.home(), 'labels', 'labels.txt'))
 
 
 def _main(args):
