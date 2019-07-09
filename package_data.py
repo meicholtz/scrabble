@@ -62,7 +62,7 @@ def main(args):
     np.savez("YAD2K-master/model_data/scrabble_dataset", images=images, boxes=labels)
     data = np.load("YAD2K-master/model_data/scrabble_dataset.npz", allow_pickle=True)
     boxes = data['boxes']
-    i =0
+    i = 0
     for box in boxes:
         print(i, box.shape)
         if(len(box.shape) != 2):

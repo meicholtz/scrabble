@@ -337,7 +337,6 @@ def draw(model_body, class_names, anchors, image_data, image_set='val',
         # plt.show()
 
 
-
 if __name__ == '__main__':
     args = argparser.parse_args()
     _main(args)
