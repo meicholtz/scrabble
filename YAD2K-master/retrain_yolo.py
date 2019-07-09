@@ -26,24 +26,21 @@ argparser.add_argument(
     '-d',
     '--data_path',
     help="path to numpy data file (.npz) containing np.object array 'boxes' and np.uint8 array 'images'",
-    default=os.path.join('..', 'DATA', 'underwater_data.npz'))
+    default=os.path.join('model_data', 'scrabble_dataset.npz'))
 
 argparser.add_argument(
     '-a',
     '--anchors_path',
     help='path to anchors file, defaults to yolo_anchors.txt',
-    default=os.path.join('model_data', 'yolo_anchors.txt'))
+    default=os.path.join('model_data', 'scrabble_anchors.txt'))
 
 argparser.add_argument(
     '-c',
     '--classes_path',
     help='path to classes file, defaults to pascal_classes.txt',
-    default=os.path.join('..', 'DATA', 'underwater_classes.txt'))
+    default=os.path.join('model_data', 'scrabble_classes.txt'))
 
-# Default anchor boxes
-YOLO_ANCHORS = np.array(
-    ((0.57273, 0.677385), (1.87446, 2.06253), (3.33843, 5.47434),
-     (7.88282, 3.52778), (9.77052, 9.16828)))
+
 
 def _main(args):
     data_path = os.path.expanduser(args.data_path)
@@ -58,8 +55,6 @@ def _main(args):
     #  and an array of images 'images'
 
     image_data, boxes = process_data(data['images'], data['boxes'])
-
-    anchors = YOLO_ANCHORS
 
     detectors_mask, matching_true_boxes = get_detector_mask(boxes, anchors)
 
