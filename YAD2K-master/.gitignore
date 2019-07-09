@@ -4,8 +4,7 @@
 *.png
 *.jpg
 *.cfg
-images/*
-images/out/*
+
 
 # Tensorboard training logs
 logs/
