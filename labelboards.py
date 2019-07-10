@@ -65,6 +65,11 @@ def main(args):
             print('{}WARNING: File already exists! Skipping to next image.\n{}{}'.format(Fore.YELLOW, txtfile, Style.RESET_ALL))
             continue
 
+        # Check to see if the image exists on this computer
+        if not os.path.exists(imgfile):
+        	print('{}WARNING: Image file does not exist! Skipping to next image.\n{}{}'.format(Fore.YELLOW, imgfile, Style.RESET_ALL))
+        	continue
+
         # Process image
         img = cv2.imread(imgfile)
         img = imwarp(img, pts)
