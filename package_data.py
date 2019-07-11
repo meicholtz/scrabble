@@ -10,7 +10,7 @@ parser.add_argument('-f', '--file', help='the file containing the labeled corner
 parser.add_argument('-ld', '--label_directory', help='The path to a directory containing labeled image text files',
                     default=os.path.join(os.path.join(home(), 'labels')))
 parser.add_argument('-n', '--name', help='name and path of the .npz file',
-                    default='YAD2K-master/model_data/scrabble_dataset')
+                    default='scrabble_dataset')
 parser.add_argument('-s', '--size', type=int, help='the size to package the images. Must be divisible by 15.',
                     default=420)
 # TODO: Make an 'all' option to package every file.
@@ -36,7 +36,7 @@ def main(args):
         textfile = textfile.split('.')[0]
         textfile = textfile + '.txt'
         if(os.path.exists(os.path.join(ld, textfile))):
-            img = cv2.imread(imgs[i])
+            img = cv2.imread(imgs[i], cv2.IMREAD_GRAYSCALE)
             # warp the image
             img = imwarp(img, pts[i], sz=(width, height))
             images.append(img)
