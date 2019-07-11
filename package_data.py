@@ -8,22 +8,22 @@ import ipdb
 from colorama import Fore, Style
 
 parser = argparse.ArgumentParser(description='Package data into a .npz file to use with YAD2K.')
-parser.add_argument('-d', '--directory', type=str, help='the directory containing the image files', default=os.path.join(home(), 'data'))
+parser.add_argument('-f', '--file', help='the file containing the labeled corners of the data',
+                    type=str, default=os.path.join(os.path.join(home(), 'labels'), 'labels.txt'))
+parser.add_argument('-n', '--name', help='name and path of the .npz file',
+                    default='"YAD2K-master/model_data/scrabble_dataset"')
+parser.add_argument('-s', '--size', help='the size to package the images. Must be divisible by 15.', default=420)
 
-parser.add_argument('-f', '--file', help='the file containing the labeled corners of the data', type=str, default=os.path.join(os.path.join(home(), 'labels'), 'labels.txt'))
-parser.add_argument('-n', '--name', help='name of the .npz file', default='my_data')
-parser.add_argument('-o', '--output', help='where to save the .npz file', default=home())
-
-
-IMAGE_SIZE = (825, 825)
 
 def main(args):
+    width, height = args.size, args.size
+    assert width / 15 == 0, 'Width and height must be divisible by 15.'
     images = []
     labels = []
     letters, num_files = count_letters(count_boards=True)
-    dd = args.directory
-    ld = os.path.join(home(), 'labels')
-    imgs, pts = readlabels(os.path.join(ld, 'labels.txt'), ind='all')
+    ld = args.file
+    name = args.name
+    imgs, pts = readlabels(ld, ind='all')
     i = 0
     j = 0
     while(j < num_files - 200):
@@ -35,20 +35,26 @@ def main(args):
         if(os.path.exists(os.path.join(ld, textfile))):
             img = cv2.imread(imgs[i])
             # warp the image
-            img = imwarp(img, pts[i], sz=IMAGE_SIZE)
+            img = imwarp(img, pts[i], sz=(width, height))
             images.append(img)
             # now open the label file and add the labels
             f = open(os.path.join(ld, textfile))
             temp = []
+            # for each line in the file containing the coordinates of the boxes
             for line in f.readlines():
+                # if the line is '~' which means a NONE label, skip it
                 if (line.split(' ')[0] == '~'):
                     continue
                 label = line.split(' ')
+                # subtracting 65 from the value of the character allows for the classes to be one hot encoded
+                # e.g. A = 0, B = 1, etc.
                 label[0] = ord(label[0]) - 65
                 label = label[:5]
+                # make everything in the label a float
                 label = [float(i) for i in label]
                 temp.append(label)
             temp = np.asarray(temp)
+            # if the length of the shape is 2, it indicates that at least one box was found and added to temp
             if(len(temp.shape) == 2):
                 labels.append(temp)
                 j += 1
@@ -59,14 +65,7 @@ def main(args):
         i += 1
     labels = np.array(labels, dtype=object)
     images = np.array(images, dtype=np.uint8)
-    np.savez("YAD2K-master/model_data/scrabble_dataset", images=images, boxes=labels)
-    data = np.load("YAD2K-master/model_data/scrabble_dataset.npz", allow_pickle=True)
-    boxes = data['boxes']
-    i = 0
-    for box in boxes:
-        print(i, box.shape)
-        if(len(box.shape) != 2):
-            print("ERROR".format(Fore.RED, Style.RESET_ALL))
+    np.savez(name, images=images, boxes=labels)
 
 if __name__ == '__main__':
     main(parser.parse_args())
