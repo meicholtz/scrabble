@@ -10,20 +10,24 @@ from colorama import Fore, Style
 parser = argparse.ArgumentParser(description='Package data into a .npz file to use with YAD2K.')
 parser.add_argument('-f', '--file', help='the file containing the labeled corners of the data',
                     type=str, default=os.path.join(os.path.join(home(), 'labels'), 'labels.txt'))
+parser.add_argument('-ld', '--label_directory', help='The path to a directory containing labeled image text files',
+                    default=os.path.join(os.path.join(home(), 'labels')))
 parser.add_argument('-n', '--name', help='name and path of the .npz file',
                     default='"YAD2K-master/model_data/scrabble_dataset"')
-parser.add_argument('-s', '--size', help='the size to package the images. Must be divisible by 15.', default=420)
+parser.add_argument('-s', '--size', type=int, help='the size to package the images. Must be divisible by 15.',
+                    default=420)
 
 
 def main(args):
     width, height = args.size, args.size
-    assert width / 15 == 0, 'Width and height must be divisible by 15.'
+    assert width % 15 == 0, 'Width and height must be divisible by 15.'
     images = []
     labels = []
     letters, num_files = count_letters(count_boards=True)
-    ld = args.file
+    ld = args.label_directory
+    file = args.file
     name = args.name
-    imgs, pts = readlabels(ld, ind='all')
+    imgs, pts = readlabels(file, ind='all')
     i = 0
     j = 0
     while(j < num_files - 200):
@@ -49,9 +53,10 @@ def main(args):
                 # subtracting 65 from the value of the character allows for the classes to be one hot encoded
                 # e.g. A = 0, B = 1, etc.
                 label[0] = ord(label[0]) - 65
-                label = label[:5]
                 # make everything in the label a float
                 label = [float(i) for i in label]
+                # make the class index (0) an int
+                label[0] = int(label[0])
                 temp.append(label)
             temp = np.asarray(temp)
             # if the length of the shape is 2, it indicates that at least one box was found and added to temp
