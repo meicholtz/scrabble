@@ -1,10 +1,7 @@
-import PIL
-import numpy as np
 from utils import *
 import os
 import argparse
 import cv2
-import ipdb
 from colorama import Fore, Style
 
 parser = argparse.ArgumentParser(description='Package data into a .npz file to use with YAD2K.')
@@ -13,9 +10,11 @@ parser.add_argument('-f', '--file', help='the file containing the labeled corner
 parser.add_argument('-ld', '--label_directory', help='The path to a directory containing labeled image text files',
                     default=os.path.join(os.path.join(home(), 'labels')))
 parser.add_argument('-n', '--name', help='name and path of the .npz file',
-                    default='"YAD2K-master/model_data/scrabble_dataset"')
+                    default='YAD2K-master/model_data/scrabble_dataset')
 parser.add_argument('-s', '--size', type=int, help='the size to package the images. Must be divisible by 15.',
                     default=420)
+# TODO: Make an 'all' option to package every file.
+parser.add_argument('-num', '--num_files', help='Number of files you which to package', default=500)
 
 
 def main(args):
@@ -23,14 +22,14 @@ def main(args):
     assert width % 15 == 0, 'Width and height must be divisible by 15.'
     images = []
     labels = []
-    letters, num_files = count_letters(count_boards=True)
+    num_files = args.num_files
     ld = args.label_directory
     file = args.file
     name = args.name
     imgs, pts = readlabels(file, ind='all')
     i = 0
     j = 0
-    while(j < num_files - 200):
+    while(j < num_files):
         if(j % 10 == 0):
             print("{} of {}".format(j, num_files))
         textfile = os.path.basename(imgs[i])
