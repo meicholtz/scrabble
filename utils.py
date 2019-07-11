@@ -254,7 +254,7 @@ def file_from_str(strr):
     # determine which index the string is in the labels file
     pass
 
-def unpackage(path=os.path.join(home(), 'YAD2K-master', 'model_data', 'scrabble_dataset.npz')):
+def unpackage(path=os.path.join(home(), 'scrabble_dataset.npz')):
     ''' Given a path to a .npz file, unpackage and display the labels on the images. The .npz file should be
         structured into 'images' with the shape (n, w, h, 3) where n is the number of images, w and h are the width and
         height of the images. The second part of the .npz file is 'boxes' which have the shape (n, b, 5) where n is the
@@ -282,7 +282,7 @@ def unpackage(path=os.path.join(home(), 'YAD2K-master', 'model_data', 'scrabble_
             # letter, take the number and add 65
             letter = chr(int(box[0]) + 65)
             cv2.putText(img=img, org=(x, y), text=letter, fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                        fontScale=1,
+                        fontScale=0.5,
                         color=(255, 255, 255))
         cv2.namedWindow("Text Overlay", cv2.WINDOW_NORMAL)
         cv2.resizeWindow("Text Overlay", 1000, 1000)

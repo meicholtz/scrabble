@@ -12,7 +12,7 @@ parser.add_argument('-ld', '--label_directory', help='The path to a directory co
 parser.add_argument('-n', '--name', help='name and path of the .npz file',
                     default='scrabble_dataset')
 parser.add_argument('-s', '--size', type=int, help='the size to package the images. Must be divisible by 15.',
-                    default=420)
+                    default=480)
 # TODO: Make an 'all' option to package every file.
 parser.add_argument('-num', '--num_files', help='Number of files you which to package', default=500)
 
