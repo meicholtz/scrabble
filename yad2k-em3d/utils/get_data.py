@@ -29,7 +29,7 @@ def get_data(filename):
     dtype('float64')
     '''
 
-    data = np.load(filename)  # load data from file
+    data = np.load(filename, allow_pickle=True)  # load data from file
 
     # Process images
     images = data['images'] / 255.  # convert images from uint8 to float64

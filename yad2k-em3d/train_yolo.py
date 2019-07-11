@@ -18,7 +18,8 @@ parser.add_argument(
     default=os.path.join('model_data', 'shape_classes.txt'))
 parser.add_argument(
     '-d', '--data_path',
-    help="path to numpy data file (.npz) containing np.object array 'boxes' and np.uint8 array 'images', defaults to images/shapes.npz",
+    help="path to numpy data file (.npz) containing np.object array 'boxes' and np.uint8 array 'images', "
+         "defaults to images/shapes.npz",
     default=os.path.join('images', 'shapes.npz'))
 parser.add_argument(
     '-o', '--output_path',
