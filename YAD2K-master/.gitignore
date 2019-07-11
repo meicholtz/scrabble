@@ -5,7 +5,6 @@
 *.jpg
 *.cfg
 
-
 # Tensorboard training logs
 logs/
 

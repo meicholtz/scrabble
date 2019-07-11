@@ -5,6 +5,7 @@
 import numpy as np
 import cv2
 import os
+import ipdb
 from skimage.util import montage
 from graphics import *
 from colorama import Fore, Style
@@ -251,6 +252,41 @@ def file_from_str(strr):
 
     # determine which index the string is in the labels file
     pass
+
+def unpackage(path=os.path.join(home(), 'YAD2K-master', 'model_data', 'scrabble_dataset.npz')):
+    ''' Given a path to a .npz file, unpackage and display the labels on the images. The .npz file should be
+        structured into 'images' with the shape (n, w, h, 3) where n is the number of images, w and h are the width and
+        height of the images. The second part of the .npz file is 'boxes' which have the shape (n, b, 5) where n is the
+        number of images, b varies from image to image and is the number of boxes per image.
+
+        Parameters
+        ----------
+        path: string
+            path to a packaged numpy file
+    '''
+    data = np.load(path, allow_pickle=True)  # throws an error if pickling is not allowed
+    images = data['images']
+    boxes = data['boxes']
+    # the width / height of the image must be divisible by 15
+    assert images.shape[1] % 15 == 0 and images.shape[2] % 15 == 0, "Width / Height of images is not divisible by 15."
+    square_size = images.shape[1] / 15
+    for i in range(len(images)):  # for every image in the images
+        img = images[i]
+        for box in boxes[i]:
+            x, y = box[1], box[2]
+            # the points are normalized and to reverse that multiply by the image shape. The y value is offset by the
+            # size of the tile
+            x, y = np.float32(x * img.shape[0]), np.float32(y * img.shape[0] + square_size)
+            # the classes of the packaged data contained number values for each letter with 'A' being 0. To get a
+            # letter, take the number and add 65
+            letter = chr(int(box[0]) + 65)
+            cv2.putText(img=img, org=(x, y), text=letter, fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                        fontScale=1,
+                        color=(255, 255, 255))
+        cv2.namedWindow("Text Overlay", cv2.WINDOW_NORMAL)
+        cv2.resizeWindow("Text Overlay", 1000, 1000)
+        cv2.imshow("Text Overlay", img)
+        cv2.waitKey(0)
 
 
 def show_labels(img, textfile, pts=None):
