@@ -10,7 +10,7 @@ parser.add_argument('-f', '--file', help='the file containing the labeled corner
 parser.add_argument('-ld', '--label_directory', help='The path to a directory containing labeled image text files',
                     default=os.path.join(os.path.join(home(), 'labels')))
 parser.add_argument('-n', '--name', help='name and path of the .npz file',
-                    default='scrabble_dataset')
+                    default='yad2k-em3d/model_data/scrabble_dataset.npz')
 parser.add_argument('-s', '--size', type=int, help='the size to package the images. Must be divisible by 15.',
                     default=480)
 # TODO: Make an 'all' option to package every file.
