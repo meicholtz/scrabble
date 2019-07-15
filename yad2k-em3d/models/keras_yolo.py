@@ -211,7 +211,7 @@ def train(model, classes, anchors, images, boxes, output_path=''):
         output_path + "_best.h5",
         monitor='val_loss',
         save_weights_only=True,
-        save_best_only=True)
+        save_best_only=True, period=5)
     early_stopping = EarlyStopping(
         monitor='val_loss',
         min_delta=0,
@@ -229,7 +229,7 @@ def train(model, classes, anchors, images, boxes, output_path=''):
         np.zeros(len(images)),
         validation_split=0.1,
         batch_size=2,
-        epochs=1000,
+        epochs=200,
         callbacks=[logging, checkpoint])
     model.save_weights(output_path + '.h5')
 

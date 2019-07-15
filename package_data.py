@@ -14,7 +14,7 @@ parser.add_argument('-n', '--name', help='name and path of the .npz file',
 parser.add_argument('-s', '--size', type=int, help='the size to package the images. Must be divisible by 15.',
                     default=480)
 # TODO: Make an 'all' option to package every file.
-parser.add_argument('-num', '--num_files', help='Number of files you which to package', default=500)
+parser.add_argument('-num', '--num_files', help='Number of files you which to package', default=400)
 
 
 def main(args):
@@ -35,6 +35,8 @@ def main(args):
         textfile = os.path.basename(imgs[i])
         textfile = textfile.split('.')[0]
         textfile = textfile + '.txt'
+        if(textfile == 'EmptyBoard.txt'):
+            continue
         if(os.path.exists(os.path.join(ld, textfile))):
             img = cv2.imread(imgs[i], cv2.IMREAD_GRAYSCALE)
             # warp the image
@@ -63,7 +65,8 @@ def main(args):
                 labels.append(temp)
                 j += 1
             else:
-                print("{}FOUND EMPTY FILE: {} {}".format(Fore.RED, textfile, Style.RESET_ALL))
+                raise Exception("FOUND EMPTY FILE: {}".format(textfile))
+
         else:
             print("{}File does not have label: {} {}".format(Fore.YELLOW, textfile, Style.RESET_ALL))
         i += 1
