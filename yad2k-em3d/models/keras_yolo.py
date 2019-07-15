@@ -229,7 +229,7 @@ def train(model, classes, anchors, images, boxes, output_path=''):
         np.zeros(len(images)),
         validation_split=0.1,
         batch_size=2,
-        epochs=200,
+        epochs=1000,
         callbacks=[logging, checkpoint])
     model.save_weights(output_path + '.h5')
 
