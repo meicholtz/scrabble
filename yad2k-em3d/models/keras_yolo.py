@@ -211,7 +211,7 @@ def train(model, classes, anchors, images, boxes, output_path=''):
         output_path + "_best.h5",
         monitor='val_loss',
         save_weights_only=True,
-        save_best_only=True, period=5)
+        save_best_only=True, period=2)
     early_stopping = EarlyStopping(
         monitor='val_loss',
         min_delta=0,

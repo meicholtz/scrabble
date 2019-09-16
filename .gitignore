@@ -3,3 +3,6 @@ __pycache__/
 test/testing.png
 *.ttf
 *.npz
+scrabble.h5
+scrabble_best.h5
+*.h5

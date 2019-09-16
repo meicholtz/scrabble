@@ -1,7 +1,11 @@
 #! /usr/bin/env python
 """Train a 2D YOLO network (v2) using custom data."""
+
+import sys
+sys.path.insert(1, 'scrabble')
 import argparse
 import os
+import ipdb
 
 from models.keras_yolo import create_model, train
 import utils
@@ -37,6 +41,8 @@ def _main(args):
     anchors = utils.get_anchors(anchors_path)
     classes = utils.get_classes(classes_path)
     images, boxes = utils.get_data(data_path)
+    utils.check_data(images, boxes)
+    ipdb.set_trace()
 
     # Train YOLO model
     model_body, model = create_model(images.shape[1:-1], int(boxes.shape[-1]), anchors, classes)
