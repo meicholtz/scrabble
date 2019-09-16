@@ -15,11 +15,9 @@ def check_data(images, boxes):
         for box in boxes[i]:
             x, y = box[0], box[1]
             wd, ht = box[2], box[3]
-            ipdb.set_trace()
             # the points are normalized and to reverse that multiply by the image shape.
             x, y, wd, ht = np.float32(x * img.shape[0]), np.float32(y * img.shape[0]), \
                          np.float32(wd * img.shape[0]), np.float32(ht * img.shape[0])
-            ipdb.set_trace()
             # the classes of the packaged data contained number values for each letter with 'A' being 0. To get a
             # letter, take the number and add 65
             letter = chr(int(box[4]) + 65)

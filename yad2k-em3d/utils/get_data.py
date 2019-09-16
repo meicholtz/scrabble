@@ -30,7 +30,6 @@ def get_data(filename):
     '''
 
     data = np.load(filename, allow_pickle=True)  # load data from file
-    ipdb.set_trace()
     # Process images
     images = data['images'] / 255.  # convert images from uint8 to float64
     image_size = np.array(images.shape[1:])  # ignore images.shape[0] (number of images)
