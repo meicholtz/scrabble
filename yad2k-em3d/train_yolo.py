@@ -41,8 +41,8 @@ def _main(args):
     anchors = utils.get_anchors(anchors_path)
     classes = utils.get_classes(classes_path)
     images, boxes = utils.get_data(data_path)
-    utils.check_data(images, boxes)
-    ipdb.set_trace()
+    # if you need to ensure the data being fed to the algorithm is correct, uncomment
+    # utils.check_data(images, boxes)
 
     # Train YOLO model
     model_body, model = create_model(images.shape[1:-1], int(boxes.shape[-1]), anchors, classes)
