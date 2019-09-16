@@ -43,9 +43,10 @@ def get_data(filename):
     assert len(set([box.shape[1] for box in boxes])) == 1, "All boxes must have same dimensions"
 
     # Compute position and shape (in pixels) of every box in every image
+    # Removed normalization of boxes because my text files are already normalized - Alexander Faus
     if boxes[0].shape[1] == 5:  # 2D case
-        box_position = [0.5 * (box[:, 3:5] + box[:, 1:3]) / image_size for box in boxes]
-        box_size = [(box[:, 3:5] - box[:, 1:3]) / image_size for box in boxes]
+        box_position = [0.5 * (box[:, 3:5] + box[:, 1:3]) for box in boxes]
+        box_size = [(box[:, 3:5] - box[:, 1:3]) for box in boxes]
     else:  # 3D case
         box_position = [0.5 * (box[:, 4:7] + box[:, 1:4]) / image_size for box in boxes]
         box_size = [(box[:, 4:7] - box[:, 1:4]) / image_size for box in boxes]
