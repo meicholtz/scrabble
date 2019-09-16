@@ -59,5 +59,4 @@ def get_data(filename):
         boxes[i] = np.zeros(max_box_shape, dtype=boxes[0].dtype)  # array of zeros (for padding)
         boxes[i][:box.shape[0], :box.shape[1]] = box
     boxes = np.array(boxes)  # convert to ndarray (as opposed to a list of ndarrays)
-
     return images, boxes

@@ -15,6 +15,8 @@ def check_data(images, boxes):
         for box in boxes[i]:
             x, y = box[0], box[1]
             wd, ht = box[2], box[3]
+            if(x > 1 or y > 1 or wd > 1 or ht > 1 or x < 0 or y < 0 or wd < 0 or ht < 0):
+                ipdb.set_trace()
             # the points are normalized and to reverse that multiply by the image shape.
             x, y, wd, ht = np.float32(x * img.shape[0]), np.float32(y * img.shape[0]), \
                          np.float32(wd * img.shape[0]), np.float32(ht * img.shape[0])
