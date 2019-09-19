@@ -45,7 +45,7 @@ def get_data(filename):
     # Removed normalization of boxes because my text files are already normalized - Alexander Faus
     if boxes[0].shape[1] == 5:  # 2D case
         box_position = [0.5 * (box[:, 3:5] + box[:, 1:3]) for box in boxes]
-        box_size = [(box[:, 3:5] - box[:, 1:3]) for box in boxes]
+        box_size = [(box[:, 3:5] - box[:, 1:3])  for box in boxes]
     else:  # 3D case
         box_position = [0.5 * (box[:, 4:7] + box[:, 1:4]) / image_size for box in boxes]
         box_size = [(box[:, 4:7] - box[:, 1:4]) / image_size for box in boxes]
@@ -53,7 +53,7 @@ def get_data(filename):
     # Concatenate boxes into [x, y, (z), w, h, (d), class], where z and d are only used in 3D
     boxes = [np.concatenate((box_position[i], box_size[i], box[:, 0:1]), axis=1) for i, box in enumerate(boxes)]
 
-    # Find the maximum number of boxes in any one image, then pad all instances with fewer boxes   (for training purposes)
+    # Find the maximum number of boxes in any one image, then pad all instances with fewer boxes (for training purposes)
     max_box_shape = max([box.shape for box in boxes])
     for i, box in enumerate(boxes):
         boxes[i] = np.zeros(max_box_shape, dtype=boxes[0].dtype)  # array of zeros (for padding)

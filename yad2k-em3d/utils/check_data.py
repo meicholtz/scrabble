@@ -8,6 +8,7 @@ import cv2
 
 
 def check_data(images, boxes):
+    ipdb.set_trace()
     assert images.shape[1] % 15 == 0 and images.shape[2] % 15 == 0, "Width / Height of images is not divisible by 15."
     square_size = images.shape[1] / 15
     for i in range(len(images)):  # for every image in the images
@@ -29,4 +30,6 @@ def check_data(images, boxes):
         cv2.namedWindow("Text Overlay", cv2.WINDOW_NORMAL)
         cv2.resizeWindow("Text Overlay", 1000, 1000)
         cv2.imshow("Text Overlay", img)
-        cv2.waitKey(0)
+        if cv2.waitKey(0) & 0xFF == ord('q'):
+            cv2.destroyAllWindows()
+            break

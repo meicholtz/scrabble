@@ -42,7 +42,7 @@ def _main(args):
     classes = utils.get_classes(classes_path)
     images, boxes = utils.get_data(data_path)
     # if you need to ensure the data being fed to the algorithm is correct, uncomment
-    # utils.check_data(images, boxes)
+    utils.check_data(images, boxes)
 
     # Train YOLO model
     model_body, model = create_model(images.shape[1:-1], int(boxes.shape[-1]), anchors, classes)
