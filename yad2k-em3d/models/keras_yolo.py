@@ -203,7 +203,7 @@ def train(model, classes, anchors, images, boxes, output_path=''):
     #     os.makedirs(output_path, exist_ok=True)
 
     # This is a hack to use the custom loss function in the last layer
-    model.compile(optimizer=SGD(lr=0.001), loss={'yolo_loss': lambda y_true, y_pred: y_pred})
+    model.compile(optimizer=Adam(lr=0.01), loss={'yolo_loss': lambda y_true, y_pred: y_pred})
 
     log_dir = os.path.join('logs', '{date:%Y%m%d%H%M%S}'.format(date=datetime.datetime.now()))
     logging = TensorBoard(log_dir=log_dir)
