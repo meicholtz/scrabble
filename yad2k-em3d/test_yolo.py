@@ -16,10 +16,10 @@ import utils
 
 parser = argparse.ArgumentParser(description="Test a 2D YOLO network (v2) on images.")
 parser.add_argument(
-    'model_path',
+    '-m','--model_path',
     help='path to h5 file containing trained YOLO network')
 parser.add_argument(
-    'data_path',
+    '-d', '--data_path',
     help="path to numpy data file (.npz) containing np.object array 'boxes' and np.uint8 array 'images'")
 parser.add_argument(
     '-a', '--anchors_path',
@@ -48,7 +48,6 @@ def _main(args):
     output_path = os.path.expanduser(args.output_path)
 
     batch = args.batch
-
     assert model_path.endswith('.h5'), 'model_path must have .h5 extension'
     assert output_path.endswith('.mat'), 'output_path must have .mat extension'
 
@@ -61,6 +60,7 @@ def _main(args):
     model_body, model = create_model(images.shape[1:-1], int(boxes.shape[-1]), anchors, classes)
     model_body.load_weights(model_path)
     model.summary()
+    ipdb.set_trace()
 
     # Pass input data through the network in batches
     output = model_body.predict(images[0:batch, :, :, :])
