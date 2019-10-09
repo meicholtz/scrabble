@@ -6,3 +6,4 @@ test/testing.png
 scrabble.h5
 scrabble_best.h5
 *.h5
+*.hdf5
