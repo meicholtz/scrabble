@@ -6,18 +6,38 @@ sys.path.insert(1, 'scrabble')
 from utils import *
 
 def sliding_window(img, model):
+    img = img / 255.0
     assert img.shape[0] % 15 == 0, "Image shape must be divisible by 15"
     assert img.shape[1] % 15 == 0, "Image shape must be divisible by 15"
+    # gather the squarse from the image
     squares = squares_from_img(img)
-    ipdb.set_trace()
-    pred = model.predict(squares[0])
-    ipdb.set_trace()
+    # reshape and resize the squares to work with Conv2D
+    squares = squares.reshape(squares.shape + (-1,))
+    squares = np.resize(squares, (squares.shape[0], 36, 36, 1))
+    # have the model predict an output for each of the squares
+    pred = model.predict(squares)
+    labels = []
+    # for each prediction change the one hot encoding to a letter
+    for p in pred:
+        letter = np.argmax(p)
+        # if the maximum is the last index, that means the model predicted a blank tile
+        if letter == 26:
+            # use ~ to represent a blank tile
+            letter = '~'
+            labels.append(letter)
+            continue
+        # 65 represents A
+        letter = 65 + letter
+        letter = chr(letter)
+        labels.append(letter)
+    return labels
+
 
 filepath = "best_model.h5"
 model = keras.models.load_model(filepath)
 
 img = get_board(ind=24, file=os.path.join(home(), 'labels', 'labels.txt'))
 
-sliding_window(img, model)
-
+labels = sliding_window(img, model)
+ipdb.set_trace()
 

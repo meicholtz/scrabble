@@ -24,6 +24,7 @@ X = X / 255.0
 # Conv2d requires 4 dim numpy array and since the backend of keras is using channels
 # last, append the 4th dimension to the end
 X = X.reshape(X.shape + (-1,))
+ipdb.set_trace()
 # Convert labels to categorical one-hot encoding
 Y = keras.utils.to_categorical(Y, num_classes=num_classes)
 
@@ -44,13 +45,11 @@ model.add(Conv2D(64, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Flatten())
 model.add(Dense(1000))
-model.add(Dense(1000))
-model.add(Dense(1000))
 model.add(Dense(num_classes, activation='softmax'))
 
 
-# load weights
-model.load_weights("weights.best.hdf5")
+# # load weights
+# model.load_weights("weights.best.hdf5")
 
 opt = SGD(lr=0.0001)
 
