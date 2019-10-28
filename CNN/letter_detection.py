@@ -24,14 +24,13 @@ X = X / 255.0
 # Conv2d requires 4 dim numpy array and since the backend of keras is using channels
 # last, append the 4th dimension to the end
 X = X.reshape(X.shape + (-1,))
-ipdb.set_trace()
+
 # Convert labels to categorical one-hot encoding
 Y = keras.utils.to_categorical(Y, num_classes=num_classes)
 
 # use the first 11000 images for training and the last 500 images for testing
 X_train, Y_train = X[:11000], Y[:11000]
 X_test, Y_test = X[11000:], Y[11000:]
-
 
 model = Sequential()
 model.add(Conv2D(32, kernel_size=(3, 3),

@@ -198,9 +198,9 @@ def readlabels(file, ind='all'):
 
 
 def squares_from_img(img):
+    # This function only works if img is an array of ints!!
     w, h = img.shape[0], img.shape[1]
     temp = []
-
     # since scrabble is 15 by 15 i should be divisible by 15
     i = w
     # if you divide i by 15 (number of rows and columns in Scrabble) you get the
