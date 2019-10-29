@@ -11,13 +11,11 @@ def sliding_window(img, model):
     # gather the squares from the image
     squares = squares_from_img(img)
     squares = squares / 255.0
-    ipdb.set_trace()
     # reshape and resize the squares to work with Conv2D
     squares = squares.reshape(squares.shape + (-1,))
     squares = np.resize(squares, (squares.shape[0], 36, 36, 1))
     # have the model predict an output for each of the squares
     pred = model.predict(squares)
-    ipdb.set_trace()
     print(pred)
     labels = []
     # for each prediction change the one hot encoding to a letter
