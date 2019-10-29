@@ -41,5 +41,6 @@ model = keras.models.load_model(filepath)
 img = get_board(ind=24, file=os.path.join(home(), 'labels', 'labels.txt'))
 
 labels = sliding_window(img, model)
+print(labels)
 ipdb.set_trace()
 
