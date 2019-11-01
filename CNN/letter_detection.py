@@ -46,9 +46,9 @@ model.add(Flatten())
 model.add(Dense(1000))
 model.add(Dense(num_classes, activation='softmax'))
 
-
-# load weights
-model.load_weights("weights.best.hdf5")
+#
+# # load weights
+# model.load_weights("weights.best.hdf5")
 
 opt = SGD(lr=0.0001)
 
