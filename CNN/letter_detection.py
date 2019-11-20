@@ -34,8 +34,8 @@ X = X.reshape(X.shape + (-1,))
 Y = keras.utils.to_categorical(Y, num_classes=num_classes)
 
 # use the first 11000 images for training and the last 500 images for testing
-X_train, Y_train = X[:11000], Y[:11000]
-X_test, Y_test = X[11000:], Y[11000:]
+X_train, Y_train = X[:7000], Y[:7000]
+X_test, Y_test = X[7000:], Y[7000:]
 
 model = Sequential()
 model.add(Conv2D(32, kernel_size=(3, 3),
@@ -51,7 +51,7 @@ model.add(Flatten())
 model.add(Dense(1000))
 model.add(Dense(num_classes, activation='softmax'))
 
-#
+
 # # load weights
 # model.load_weights("weights.best.hdf5")
 
