@@ -14,6 +14,11 @@ sys.path.insert(1, 'scrabble')
 from utils import *
 
 
+def display_i(img, name="test"):
+    cv2.imshow(name, img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
 num_classes = 27
 
 data = np.load(os.path.join(home(), "CNN", "data.npz"), allow_pickle=True)
@@ -50,9 +55,10 @@ model.add(Dense(num_classes, activation='softmax'))
 # # load weights
 # model.load_weights("weights.best.hdf5")
 
-opt = SGD(lr=0.0001)
+# opt = SGD(lr=0.001)
 
-model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
+model.compile(optimizer=keras.optimizers.Adam(),
+              loss='categorical_crossentropy', metrics=['accuracy'])
 
 model.summary()
 # Train the model, iterating on the data in batches of 32 samples

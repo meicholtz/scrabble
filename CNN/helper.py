@@ -4,9 +4,12 @@ import sys
 # access the base directory to be able to use scrabble/utils.py
 sys.path.insert(1, 'scrabble')
 from utils import *
-from collections import Counter
 
 
+def display_i(img, name="test"):
+    cv2.imshow(name, img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
 def proccess_data(corner_labels=os.path.join(os.path.join(home(), 'labels'), 'labels.txt'),
                   class_labels=os.path.join(os.path.join(home(), 'labels')), num_files=600):
@@ -41,15 +44,18 @@ def proccess_data(corner_labels=os.path.join(os.path.join(home(), 'labels'), 'la
             # warp the image
             img = imwarp(img, pts[i], sz=(width, height))
             squares = squares_from_img(img)
-            for s in squares:
-                images.append(s)
+            # for s in squares:
+            #     images.append(s)
             # now open the label file and add the labels
             f = open(os.path.join(ld, textfile))
             # for each line in the file containing the coordinates of the boxes
+            s = 0
             for line in f.readlines():
                 # if the line is '~' which means a NONE label, assign it 26
                 if (line.split(' ')[0] == '~'):
                     labels.append([26])
+                    images.append(squares[s])
+                    s += 1
                     continue
                 label = line.split(' ')
                 # subtracting 65 from the value of the character allows for the classes to be one hot encoded
@@ -58,6 +64,8 @@ def proccess_data(corner_labels=os.path.join(os.path.join(home(), 'labels'), 'la
                 # make the class index (0) an int
                 label[0] = int(label[0])
                 labels.append([label[0]])
+                images.append(squares[s])
+                s += 1
         else:
             print("{}File does not have label: {} {}".format(Fore.YELLOW, textfile, Style.RESET_ALL))
         i += 1
@@ -65,6 +73,7 @@ def proccess_data(corner_labels=os.path.join(os.path.join(home(), 'labels'), 'la
     labels = np.array(labels, dtype=object)
     images = np.array(images, dtype=np.uint8)
     return images, labels
+
 
 def balance_data(images, labels):
     X = []
@@ -76,7 +85,8 @@ def balance_data(images, labels):
     freq = np.bincount(flat)
     # find the lowest number of occurrences
     num = np.min(freq)
-    # this number will be used to balance all the labels. All labels will have the same number of entries for the CNN
+    # this number will be used to balance all the labels.
+    # All labels will have the same number of entries for the CNN
     for i in range(27):
         ind = np.where(labels == [i])[0]
         chosen = np.random.choice(ind, num)
@@ -89,9 +99,9 @@ def balance_data(images, labels):
             Y = np.concatenate((Y, labels[chosen]))
     return X, Y
 
+
 def create_files():
     X, Y = proccess_data()
     X, Y = balance_data(X, Y)
     np.savez(os.path.join(home(), "CNN", "data.npz"), X=X, Y=Y)
-
 
