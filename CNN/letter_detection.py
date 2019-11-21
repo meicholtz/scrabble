@@ -42,13 +42,13 @@ model.add(Conv2D(32, kernel_size=(3, 3),
                  activation='relu',
                  input_shape=X_train.shape[1:], padding="valid"))
 model.add(Conv2D(64, (3, 3), activation='relu'))
+model.add(Dropout(0.2))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Conv2D(32, kernel_size=(3, 3),
                  activation='relu'))
-model.add(Conv2D(64, (3, 3), activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.2))
 model.add(Flatten())
-model.add(Dense(1000))
+model.add(Dense(2000))
 model.add(Dense(num_classes, activation='softmax'))
 
 
