@@ -23,6 +23,8 @@ num_classes = 27
 
 data = np.load(os.path.join(home(), "CNN", "data.npz"), allow_pickle=True)
 
+
+
 X, Y = data["X"], data["Y"]
 
 X = X / 255.0
@@ -33,20 +35,20 @@ X = X.reshape(X.shape + (-1,))
 # Convert labels to categorical one-hot encoding
 Y = keras.utils.to_categorical(Y, num_classes=num_classes)
 
+np.random.seed(420)
+chosen = np.random.choice(10999, 2200)
 # use the first 11000 images for training and the last 500 images for testing
-X_train, Y_train = X[:7000], Y[:7000]
-X_test, Y_test = X[7000:], Y[7000:]
+X_test, Y_test = X[chosen, :], Y[chosen, :]
+X_train, Y_train = np.delete(X, chosen, 0), np.delete(Y, chosen, 0)
 
 model = Sequential()
 model.add(Conv2D(32, kernel_size=(3, 3),
                  activation='relu',
                  input_shape=X_train.shape[1:], padding="valid"))
 model.add(Conv2D(64, (3, 3), activation='relu'))
-model.add(Dropout(0.2))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Conv2D(32, kernel_size=(3, 3),
                  activation='relu'))
-model.add(Dropout(0.2))
 model.add(Flatten())
 model.add(Dense(2000))
 model.add(Dense(num_classes, activation='softmax'))
