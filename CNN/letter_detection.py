@@ -37,7 +37,7 @@ Y = keras.utils.to_categorical(Y, num_classes=num_classes)
 
 np.random.seed(420)
 chosen = np.random.choice(10999, 2200)
-# use the first 11000 images for training and the last 500 images for testing
+
 X_test, Y_test = X[chosen, :], Y[chosen, :]
 X_train, Y_train = np.delete(X, chosen, 0), np.delete(Y, chosen, 0)
 

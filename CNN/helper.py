@@ -44,6 +44,7 @@ def proccess_data(corner_labels=os.path.join(os.path.join(home(), 'labels'), 'la
             # warp the image
             img = imwarp(img, pts[i], sz=(width, height))
             squares = squares_from_img(img)
+            ipdb.set_trace()
             # for s in squares:
             #     images.append(s)
             # now open the label file and add the labels
@@ -104,4 +105,3 @@ def create_files():
     X, Y = proccess_data()
     X, Y = balance_data(X, Y)
     np.savez(os.path.join(home(), "CNN", "data.npz"), X=X, Y=Y)
-

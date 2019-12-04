@@ -15,7 +15,7 @@ TILES = 15
 BLANK_LABEL = '~'  # string for tiles that do not contain a letter
 
 
-def get_board(file, ind):
+def get_board(file, ind, sz=(825, 825)):
     '''Get warped image of a user-specified Scrabble board via labeled data.
 
         Parameters
@@ -27,8 +27,8 @@ def get_board(file, ind):
             Index of the board the user wishes to process
     '''
     imgfile, pts = readlabels(file, ind)  # get data from label file
-    img = cv2.imread(imgfile)  # read image from file
-    return imwarp(img, pts)  # return warped image
+    img = cv2.imread(imgfile, cv2.IMREAD_GRAYSCALE)  # read image from file
+    return imwarp(img, pts, sz=sz)  # return warped image
 
 
 def get_squares(file, ind):
