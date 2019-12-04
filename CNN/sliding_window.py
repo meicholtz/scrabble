@@ -34,15 +34,17 @@ def sliding_window(img, model):
             # use ~ to represent a blank tile
             letter = '~'
             labels.append(letter)
-            display_i(save_squares[i], str(letter))
+            cv2.putText(save_squares[i], str(letter), (5, 25), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 1)
             i += 1
             continue
         # 65 represents A
         letter = 65 + letter
         letter = chr(letter)
-        display_i(save_squares[i], str(letter))
+        cv2.putText(save_squares[i], str(letter), (5, 25), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 1)
         i += 1
         labels.append(letter)
+    m = squares_to_board(save_squares)
+    display_i(m)
     return labels
 
 

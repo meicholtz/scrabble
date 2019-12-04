@@ -216,7 +216,7 @@ def squares_from_img(img):
 
 
 def squares_to_board(squares):
-    squares = squares.reshape((-1, 55, 55))
+    squares = squares.reshape((-1, 36, 36))
     m = montage(squares[:225], grid_shape=(15, 15))
     return m
 
@@ -248,11 +248,6 @@ def display_board(squares):
     cv2.waitKey(0)
 
 
-def file_from_str(strr):
-    # which label file the strr is in
-
-    # determine which index the string is in the labels file
-    pass
 
 def unpackage(path=os.path.join(home(), 'scrabble_dataset.npz')):
     ''' Given a path to a .npz file, unpackage and display the labels on the images. The .npz file should be
