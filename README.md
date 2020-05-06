@@ -12,3 +12,4 @@
     python3 sliding_window.py
     
 This should generate a picture of Scrabble board and then a text overlay of predicted letters.
+![Example Text Overlay](example.png)
