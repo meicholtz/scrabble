@@ -51,7 +51,7 @@ nulltype==2.2.11
 numeral==0.1.0.11
 numpy==1.14.1
 numpydoc==0.8.0
-opencv-python==3.4.0.12
+opencv-python==3.4.7.28
 options==1.4.8
 packaging==17.1
 pandas==0.22.0
