@@ -49,7 +49,7 @@ networkx==2.1
 nibabel==2.2.1
 nulltype==2.2.11
 numeral==0.1.0.11
-numpy==1.14.1
+numpy==1.22.0
 numpydoc==0.8.0
 opencv-python==3.4.0.12
 options==1.4.8
